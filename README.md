@@ -1,13 +1,13 @@
 # Angular Grid System
 
-![ngx-grid](preview.jpg?raw=true "ngx-grid preview")
-
 ## Angular library to create a simple grid layout
 
 [![npm](https://ico.y.gy/npm/dm/@marxlnfcs/ngx-grid?style=flat-square&logo=npm)](https://www.npmjs.com/package/@marxlnfcs/ngx-grid)
 [![NPM](https://ico.y.gy/npm/l/@marxlnfcs/ngx-grid?style=flat-square&color=brightgreen)](https://www.npmjs.com/package/@marxlnfcs/ngx-grid)
 [![Snyk Vulnerabilities for npm package](https://ico.y.gy/snyk/vulnerabilities/npm/@marxlnfcs/ngx-grid?style=flat-square&logo=snyk)](https://snyk.io/test/npm/@marxlnfcs/ngx-grid)
 [![Website](https://ico.y.gy/website?down_color=red&down_message=offline&label=repository&up_color=success&up_message=online&url=https%3A%2F%2Fgithub.com%2Fmarxlnfcs%2Fngx-grid&style=flat-square&logo=github)](https://github.com/marxlnfcs/ngx-grid)
+
+![ngx-grid](preview.jpg?raw=true "ngx-grid preview")
 
 ## Installation
 `npm i @marxlnfcs/ngx-grid`
