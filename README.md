@@ -7,7 +7,7 @@
 [![Snyk Vulnerabilities for npm package](https://ico.y.gy/snyk/vulnerabilities/npm/@marxlnfcs/ngx-grid?style=flat-square&logo=snyk)](https://snyk.io/test/npm/@marxlnfcs/ngx-grid)
 [![Website](https://ico.y.gy/website?down_color=red&down_message=offline&label=repository&up_color=success&up_message=online&url=https%3A%2F%2Fgithub.com%2Fmarxlnfcs%2Fngx-grid&style=flat-square&logo=github)](https://github.com/marxlnfcs/ngx-grid)
 
-![ngx-grid](preview.jpg?raw=true "ngx-grid preview")
+![ngx-grid](https://raw.githubusercontent.com/marxlnfcs/ngx-grid/main/preview.jpg?raw=true "ngx-grid preview")
 
 ## Installation
 `npm i @marxlnfcs/ngx-grid`

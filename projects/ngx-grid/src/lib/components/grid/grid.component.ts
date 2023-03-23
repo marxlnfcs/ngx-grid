@@ -3,10 +3,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ContentChildren, Inject,
+  ContentChildren,
+  Inject,
   Input,
   OnChanges,
-  OnDestroy, Optional,
+  OnDestroy,
+  Optional,
   QueryList,
   SimpleChanges
 } from "@angular/core";
@@ -15,7 +17,6 @@ import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../../grid.constants";
 import {NgxGridRef} from "../../services/grid-ref.service";
 import {NgxGridItem, NgxGridItemType} from "./grid.directive"
 import {Subscription} from "rxjs";
-import {NgStyle} from "@angular/common";
 import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
 @Component({

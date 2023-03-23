@@ -1,9 +1,24 @@
 {
   "name": "ngx-grid",
-  "version": "0.0.1",
+  "description": "Angular library to create a simple grid layout",
+  "version": "1.0.0",
+  "author": "marxlnfcs",
+  "homepage": "https://github.com/marxlnfcs/ngx-grid#readme",
+  "bugs": {
+    "url": "https://github.com/marxlnfcs/ngx-grid/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marxlnfcs/ngx-grid.git"
+  },
+  "keywords": [
+    "angular",
+    "grid"
+  ],
   "peerDependencies": {
     "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0"
+    "@angular/core": "^14.0.0",
+    "rxjs": "~7.5.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
