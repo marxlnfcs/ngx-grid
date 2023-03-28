@@ -1,7 +1,7 @@
 {
-  "name": "ngx-grid",
+  "name": "@marxlnfcs/ngx-grid",
   "description": "Angular library to create a simple grid layout",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "author": "marxlnfcs",
   "homepage": "https://github.com/marxlnfcs/ngx-grid#readme",
   "bugs": {

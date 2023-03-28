@@ -16,6 +16,7 @@
 
 ---
 
+#
 ### Module:
 Import `NgxGridModule` from `@marxlnfcs/ngx-grid`
 
@@ -24,11 +25,11 @@ import { NgxGridModule } from '@marxlnfcs/ngx-grid';
 
 @NgModule({
   imports: [
-      NgxGridModule
+    NgxGridModule
   ]
 })
 ```
-
+#
 ### Grid component
 Simple component to build a dynamic and easy to use grid layout
 ```javascript
@@ -42,6 +43,7 @@ Simple component to build a dynamic and easy to use grid layout
 </ngx-grid>
 ```
 
+#
 #### Options for Grid component: `<ngx-grid>`
 * `baseBreakpoint` - Defines the base breakpoint of this component. (default is `xs`), Possible values: xs, sm, md, lg, xl, 2xl, 3xl, 4xl
 * `baseSize` - Defines the default column size of the grid. (default is `12`), Possible values: 2, 4, 6, 8, 10, 12
@@ -51,6 +53,7 @@ Simple component to build a dynamic and easy to use grid layout
 * `autoRows` - Whether to use the grid-auto-rows feature. (default is `true`)
 * `rows` - Accepts a list of strings to define the size of each row statically. (default is `null`)
 
+#
 #### Options for the grid column directive: `<ngx-grid-column>`
 For every directive there are multiple `size`, `offset` and `order` options for each breakpoint.
 The `[size]`, `[offset]` and `[order]` input uses the current base breakpoint.
@@ -66,6 +69,7 @@ Offset sizes: `2`, `4`, `6`, `8`, `10`
 * `order` - Sets the position of the column. (default is `null`)
 * `*:order` - Sets the position of the column. (default is `null`)
 
+#
 #### Options for the grid group directive: `<ngx-grid-group>`
 For every directive there are multiple `size`, `offset` and `order` options for each breakpoint.
 The `[size]`, `[offset]` and `[order]` input uses the current base breakpoint.
@@ -86,14 +90,16 @@ Offset sizes: `2`, `4`, `6`, `8`, `10`
 * `order` - Sets the position of the column. (default is `null`)
 * `*:order` - Sets the position of the column. (default is `null`)
 
+#
 ### Grid centered component
 Simple component to center a specific size of container
 ```javascript
 <ngx-grid-centered>
-    ...
+  ...
 </ngx-grid-centered>
 ```
 
+#
 #### Options for the grid centered component: `<ngx-grid-centered>`
 For every breakpoint, there is a native `size` option.
 The `[size]` input uses the current base breakpoint.
@@ -106,6 +112,7 @@ Sizes: `1-12`
 * `autoRows` - Whether to use the grid-auto-rows feature. (default is `true`)
 
 
+#
 ## Global Options
 
 ---
@@ -116,5 +123,3 @@ In the `forRoot` method when importing the grid module in the app module you can
 * `columnGap` - Sets the spacing between all columns. (default is the value of the `gap` option)
 * `rowGap` - Sets the spacing between all rows. (default is the value of the `gap` option)
 * `autoRows` - Whether to use the grid-auto-rows feature. (default is `true`)
-
-
