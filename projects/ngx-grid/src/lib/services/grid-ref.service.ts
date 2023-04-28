@@ -160,10 +160,6 @@ export class NgxGridRef implements OnDestroy {
       this.createBreakpoint(item, '2xl', item._2xl, item._2xlOffset, item._2xlOrder),
       this.createBreakpoint(item, '3xl', item._3xl, item._3xlOffset, item._3xlOrder),
       this.createBreakpoint(item, '4xl', item._4xl, item._4xlOffset, item._4xlOrder),
-      this.createBreakpoint(item, 'hd', item._hd, item._hdOffset, item._hdOrder),
-      this.createBreakpoint(item, 'fhd', item._fhd, item._fhdOffset, item._fhdOrder),
-      this.createBreakpoint(item, '2k', item._2k, item._2kOffset, item._2kOrder),
-      this.createBreakpoint(item, '4k', item._4k, item._4kOffset, item._4kOrder),
     ];
   }
 

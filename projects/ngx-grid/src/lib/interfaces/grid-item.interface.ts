@@ -39,22 +39,6 @@ export interface INgxGridItem {
   _4xlOffset?: NgxGridColumnSize|null;
   _4xlOrder?: number|null;
 
-  _hd?: NgxGridColumnSize|null;
-  _hdOffset?: NgxGridColumnSize|null;
-  _hdOrder?: number|null;
-
-  _fhd?: NgxGridColumnSize|null;
-  _fhdOffset?: NgxGridColumnSize|null;
-  _fhdOrder?: number|null;
-
-  _2k?: NgxGridColumnSize|null;
-  _2kOffset?: NgxGridColumnSize|null;
-  _2kOrder?: number|null;
-
-  _4k?: NgxGridColumnSize|null;
-  _4kOffset?: NgxGridColumnSize|null;
-  _4kOrder?: number|null;
-
   apply(ngClass: { [klass: string]: any; }, ngStyle: { [klass: string]: any; }, ngxStyleVariables: { [variable: string]: string|number|boolean|null|undefined; }): void;
 }
 
