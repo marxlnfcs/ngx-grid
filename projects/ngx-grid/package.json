@@ -1,7 +1,7 @@
 {
   "name": "@marxlnfcs/ngx-grid",
   "description": "Angular library to create a simple grid layout",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "author": "marxlnfcs",
   "homepage": "https://github.com/marxlnfcs/ngx-grid#readme",
   "bugs": {
@@ -22,8 +22,5 @@
     "@angular/common": ">=14.0.0",
     "@angular/core": ">=14.0.0",
     "rxjs": ">=7.5.0"
-  },
-  "dependencies": {
-    "tslib": "^2.3.0"
   }
 }
