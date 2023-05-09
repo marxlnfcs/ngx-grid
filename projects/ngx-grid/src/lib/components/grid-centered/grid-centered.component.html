@@ -1,24 +1,3 @@
-<ngx-grid [rows]="['1fr']" [autoRows]="autoRows ?? false">
-  <ngx-grid-column
-    [size]="size"
-    [offset]="offset"
-    [xs:size]="size_xs"
-    [xs:offset]="offset_xs"
-    [sm:size]="size_sm"
-    [sm:offset]="offset_sm"
-    [md:size]="size_md"
-    [md:offset]="offset_md"
-    [lg:size]="size_lg"
-    [lg:offset]="offset_lg"
-    [xl:size]="size_xl"
-    [xl:offset]="offset_xl"
-    [2xl:size]="size_2xl"
-    [2xl:offset]="offset_2xl"
-    [3xl:size]="size_3xl"
-    [3xl:offset]="offset_3xl"
-    [4xl:size]="size_4xl"
-    [4xl:offset]="offset_4xl"
-  >
+<div class="ngx-grid-centered" [ngClass]="componentClasses">
     <ng-content></ng-content>
-  </ngx-grid-column>
-</ngx-grid>
+</div>
