@@ -15,6 +15,9 @@
       height: 100%; max-height: 100%;
       grid-template-columns: repeat(var(--ngx-grid-base-size), 1fr);
 
+      &.ngx-grid-auto-rows {
+        grid-auto-rows: min-content;
+      }
       &.ngx-grid-column-gap {
         column-gap: var(--ngx-grid-column-gap);
       }
