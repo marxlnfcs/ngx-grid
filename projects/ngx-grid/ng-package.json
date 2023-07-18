@@ -5,6 +5,8 @@
     "entryFile": "src/public-api.ts"
   },
   "assets": [
+    "./scss",
+    "./index.scss",
     "LICENSE",
     "README.md"
   ]
