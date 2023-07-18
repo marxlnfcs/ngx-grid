@@ -15,6 +15,9 @@
       height: 100%; max-height: 100%;
       grid-template-columns: repeat(var(--ngx-grid-base-size), 1fr);
 
+      &.ngx-grid-strategy-container {
+        container-type: inline-size;
+      }
       &.ngx-grid-auto-rows {
         grid-auto-rows: min-content;
       }
@@ -43,6 +46,23 @@
 
             grid-column-start: var(--ngx-grid-column-start-#{$breakpoint});
             grid-column-end: var(--ngx-grid-column-end-#{$breakpoint});
+          }
+        }
+      }
+    }
+
+    /** Calculations for container strategy */
+    &.ngx-grid-strategy-container, .ngx-grid-group.ngx-grid-strategy-container {
+      @each $breakpoint, $minWidth in $NGX_GRID_BREAKPOINTS {
+        @container (width >= $minWidth) {
+          @for $size from 1 through 12 {
+            .ngx-grid-group.ngx-grid-size-#{$breakpoint}-#{$size}, .ngx-grid-column.ngx-grid-size-#{$breakpoint}-#{$size} {
+              grid-row-start: var(--ngx-grid-row-start-#{$breakpoint});
+              grid-row-end: var(--ngx-grid-row-end-#{$breakpoint});
+
+              grid-column-start: var(--ngx-grid-column-start-#{$breakpoint});
+              grid-column-end: var(--ngx-grid-column-end-#{$breakpoint});
+            }
           }
         }
       }

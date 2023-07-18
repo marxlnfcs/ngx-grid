@@ -1,3 +1,4 @@
+export type NgxGridStrategy = 'screen'|'container';
 export type NgxGridColumnSize = 1|2|3|4|5|6|7|8|9|10|11|12;
 export type NgxGridColumnSizeEven = 2|4|6|8|10|12;
 export type NgxGridBreakpointName = 'xs'|'sm'|'md'|'lg'|'xl'|'2xl'|'3xl'|'4xl';
@@ -10,6 +11,15 @@ export interface NgxGridBreakpoint {
 }
 
 export interface NgxGridOptions {
+
+  /**
+   * Defines which strategy the css style should use
+   * > screen - Uses the @media query to evaluate the size of the columns based on the viewpoint
+   * > container - Uses the @container query to evaluate the size of the column based on the parent container
+   * @example container
+   * @default screen
+   */
+  strategy: NgxGridStrategy;
 
   /**
    * Defines the base breakpoint

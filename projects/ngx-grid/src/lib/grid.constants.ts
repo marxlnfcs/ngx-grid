@@ -2,6 +2,7 @@ import {NgxGridOptions} from "./interfaces/grid.interface";
 import {InjectionToken} from "@angular/core";
 
 export const GRID_OPTIONS_DEFAULTS: NgxGridOptions = {
+  strategy: 'screen',
   baseBreakpoint: 'xs',
   baseSize: 12,
   gap: '1rem',

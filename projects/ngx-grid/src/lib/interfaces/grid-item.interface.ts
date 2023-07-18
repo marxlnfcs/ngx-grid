@@ -1,4 +1,4 @@
-import {NgxGridColumnSize} from "./grid.interface";
+import {NgxGridColumnSize, NgxGridStrategy} from "./grid.interface";
 
 export interface INgxGridItem {
   type: 'column'|'group';
@@ -45,6 +45,7 @@ export interface INgxGridItem {
 export interface INgxGridGroup extends INgxGridItem {
   readonly type: 'group';
 
+  strategy?: NgxGridStrategy|null;
   gap?: string|number|false|null;
   columnGap?: string|number|false|null;
   rowGap?: string|number|false|null;

@@ -14,7 +14,7 @@ import {
   NgxGridBreakpointName,
   NgxGridColumnSize,
   NgxGridColumnSizeEven,
-  NgxGridOptions
+  NgxGridOptions, NgxGridStrategy
 } from "../../interfaces/grid.interface";
 import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../../grid.constants";
 
@@ -25,6 +25,7 @@ import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../../grid.constants";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgxGridCenteredComponent implements OnInit, OnChanges {
+  @Input() strategy?: NgxGridStrategy|null;
   @Input() baseBreakpoint?: NgxGridBreakpointName|null;
   @Input() baseSize?: NgxGridColumnSizeEven|null;
   @Input() autoRows?: boolean|null;
@@ -57,6 +58,7 @@ export class NgxGridCenteredComponent implements OnInit, OnChanges {
 
   private getOptions(): NgxGridOptions {
     return {
+      strategy: this.strategy ?? this.gridOptions?.strategy ?? GRID_OPTIONS_DEFAULTS.strategy,
       baseBreakpoint: this.baseBreakpoint ?? this.gridOptions?.baseBreakpoint ?? GRID_OPTIONS_DEFAULTS.baseBreakpoint,
       baseSize: this.baseSize ?? this.gridOptions?.baseSize ?? GRID_OPTIONS_DEFAULTS.baseSize,
       gap: this.gridOptions?.gap ?? GRID_OPTIONS_DEFAULTS.gap,

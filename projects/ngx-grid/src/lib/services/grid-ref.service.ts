@@ -19,6 +19,7 @@ export class NgxGridRef implements OnDestroy {
   }
   getOptions(): NgxGridOptions {
     return {
+      strategy: this.options?.strategy ?? GRID_OPTIONS_DEFAULTS.strategy,
       baseBreakpoint: this.options?.baseBreakpoint ?? GRID_OPTIONS_DEFAULTS.baseBreakpoint,
       baseSize: this.options?.baseSize ?? GRID_OPTIONS_DEFAULTS.baseSize,
       gap: this.options?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
@@ -36,6 +37,7 @@ export class NgxGridRef implements OnDestroy {
   private createColumnClasses(item: INgxGridColumn|INgxGridGroup, group?: INgxGridGroup|null): { [klass: string]: any } {
     return item.type === 'group'
       ? {
+        'ngx-grid-strategy-container': (item.strategy ?? group?.strategy ?? this.getOptions().strategy) === 'container',
         'ngx-grid-column-gap': (item.columnGap ?? item.gap ?? group?.columnGap ?? group?.gap ?? this.getOptions().columnGap) !== false,
         'ngx-grid-row-gap': (item.rowGap ?? item.gap ?? group?.rowGap ?? group?.gap ?? this.getOptions().rowGap) !== false,
         'ngx-grid-auto-rows': group?.autoRows ?? this.getOptions().autoRows ?? true,

@@ -8,7 +8,7 @@ import {
   OnDestroy,
   QueryList
 } from "@angular/core";
-import {NgxGridColumnSize} from "../../interfaces/grid.interface";
+import {NgxGridColumnSize, NgxGridStrategy} from "../../interfaces/grid.interface";
 import {NgxGridRef} from "../../services/grid-ref.service";
 import {INgxGridColumn, INgxGridGroup, INgxGridItem} from "../../interfaces/grid-item.interface";
 import {Subscription} from "rxjs";
@@ -151,6 +151,7 @@ export class NgxGridGroupDirective extends NgxGridItem implements INgxGridGroup,
 
   @ContentChildren(NgxGridItem) private itemsRef!: QueryList<NgxGridItemType>;
 
+  @Input() strategy?: NgxGridStrategy|null;
   @Input() gap?: string|number|false|null;
   @Input() columnGap?: string|number|false|null;
   @Input() rowGap?: string|number|false|null;

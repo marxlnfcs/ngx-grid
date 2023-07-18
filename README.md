@@ -1,11 +1,12 @@
-# Angular Grid System
+<p align="center" style="font-size: 40px;">Angular Grid System</p>
 
-## Angular library to create a simple grid layout
-
-[![npm](https://ico.y.gy/npm/dm/@marxlnfcs/ngx-grid?style=flat-square&logo=npm)](https://www.npmjs.com/package/@marxlnfcs/ngx-grid)
-[![NPM](https://ico.y.gy/npm/l/@marxlnfcs/ngx-grid?style=flat-square&color=brightgreen)](https://www.npmjs.com/package/@marxlnfcs/ngx-grid)
-[![Snyk Vulnerabilities for npm package](https://ico.y.gy/snyk/vulnerabilities/npm/@marxlnfcs/ngx-grid?style=flat-square&logo=snyk)](https://snyk.io/test/npm/@marxlnfcs/ngx-grid)
-[![Website](https://ico.y.gy/website?down_color=red&down_message=offline&label=repository&up_color=success&up_message=online&url=https%3A%2F%2Fgithub.com%2Fmarxlnfcs%2Fngx-grid&style=flat-square&logo=github)](https://github.com/marxlnfcs/ngx-grid)
+<p align="center">Angular library to create a simple grid layout</p>
+<p align="center">
+    <a href="https://www.npmjs.com/package/@marxlnfcs/ngx-grid" target="_blank"><img src="https://img.shields.io/npm/v/@marxlnfcs/ngx-grid.svg" alt="NPM Version" /></a>
+    <a href="https://www.npmjs.com/package/@marxlnfcs/ngx-grid" target="_blank"><img src="https://img.shields.io/npm/l/@marxlnfcs/ngx-grid.svg" alt="Package License" /></a>
+    <a href="https://www.npmjs.com/package/@marxlnfcs/ngx-grid" target="_blank"><img src="https://img.shields.io/npm/dm/@marxlnfcs/ngx-grid.svg" alt="NPM Downloads" /></a>
+    <a href="https://www.npmjs.com/package/@marxlnfcs/ngx-grid" target="_blank"><img src="https://img.shields.io/bundlephobia/min/@marxlnfcs/ngx-grid?label=size" alt="Package Size" /></a>
+</p>
 
 ![ngx-grid](https://raw.githubusercontent.com/marxlnfcs/ngx-grid/main/preview.jpg "ngx-grid preview")
 
@@ -45,6 +46,7 @@ Simple component to build a dynamic and easy to use grid layout
 
 #
 #### Options for Grid component: `<ngx-grid>`
+* `strategy` - Defines the strategy of the grid component. SCREEN uses the media queries and CONTAINER uses the container queries which is experimental, Possible values: screen, container
 * `baseBreakpoint` - Defines the base breakpoint of this component. (default is `xs`), Possible values: xs, sm, md, lg, xl, 2xl, 3xl, 4xl
 * `baseSize` - Defines the default column size of the grid. (default is `12`), Possible values: 2, 4, 6, 8, 10, 12
 * `gap` - Sets the spacing between all columns and rows. (default is `1rem`)
@@ -117,6 +119,7 @@ Sizes: `1-12`
 
 ---
 In the `forRoot` method when importing the grid module in the app module you can specify the following options that will be globally applied to all grid instances.
+* `strategy` - Defines the strategy of the grid component. SCREEN uses the media queries and CONTAINER uses the container queries which is still experimental, Possible values: screen, container
 * `baseBreakpoint` - Defines the base breakpoint of this component. (default is `xs`), Possible values: xs, sm, md, lg, xl, 2xl, 3xl, 4xl
 * `baseSize` - Defines the default column size of the grid. (default is `12`), Possible values: 2, 4, 6, 8, 10, 12
 * `gap` - Sets the spacing between all columns and rows. (default is `1rem`)
