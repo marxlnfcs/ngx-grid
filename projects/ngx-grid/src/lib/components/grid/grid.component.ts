@@ -12,7 +12,12 @@ import {
   QueryList,
   SimpleChanges
 } from "@angular/core";
-import {NgxGridBreakpointName, NgxGridColumnSizeEven, NgxGridOptions} from "../../interfaces/grid.interface";
+import {
+  NgxGridBreakpointName,
+  NgxGridColumnSizeEven,
+  NgxGridOptions,
+  NgxGridStrategy
+} from "../../interfaces/grid.interface";
 import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../../grid.constants";
 import {NgxGridRef} from "../../services/grid-ref.service";
 import {NgxGridItem, NgxGridItemType} from "./grid.directive"
@@ -25,6 +30,9 @@ import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
   styleUrls: ['./grid.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [NgxGridRef],
+  host: {
+    '[class.ngx-grid-strategy-container]': 'options.strategy === "container"'
+  }
 })
 export class NgxGridComponent implements AfterContentInit, OnChanges, OnDestroy {
   @ContentChildren(NgxGridItem) private itemsRef!: QueryList<NgxGridItemType>;
@@ -35,6 +43,7 @@ export class NgxGridComponent implements AfterContentInit, OnChanges, OnDestroy 
   @Input() rows?: string[];
   @Input() baseBreakpoint?: NgxGridBreakpointName|null;
   @Input() baseSize?: NgxGridColumnSizeEven|null;
+  @Input() strategy?: NgxGridStrategy|null;
   @Input() autoRows?: boolean|null;
 
   gridSubs: Subscription[] = [];
@@ -75,6 +84,7 @@ export class NgxGridComponent implements AfterContentInit, OnChanges, OnDestroy 
 
   get options(): NgxGridOptions {
     return {
+      strategy: this.strategy ?? this.gridOptions?.strategy ?? GRID_OPTIONS_DEFAULTS.strategy,
       baseBreakpoint: this.baseBreakpoint ?? this.gridOptions?.baseBreakpoint ?? GRID_OPTIONS_DEFAULTS.baseBreakpoint,
       baseSize: this.baseSize ?? this.gridOptions?.baseSize ?? GRID_OPTIONS_DEFAULTS.baseSize,
       gap: this.gap ?? this.gridOptions?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
