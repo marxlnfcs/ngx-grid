@@ -21,7 +21,7 @@
 Import `NgxGridModule` from `@marxlnfcs/ngx-grid`
 
 ```javascript
-import { NgxGridModule } from '@marxlnfcs/ngx-grid';
+import { NgxGridModule } from '@marxlnfcs/ngx-grid-alt';
 
 @NgModule({
   imports: [

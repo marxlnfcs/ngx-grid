@@ -8,17 +8,17 @@ import {
   OnDestroy,
   QueryList
 } from "@angular/core";
-import {NgxGridColumnSize, NgxGridStrategy} from "../../interfaces/grid.interface";
-import {NgxGridRef} from "../../services/grid-ref.service";
-import {INgxGridColumn, INgxGridGroup, INgxGridItem} from "../../interfaces/grid-item.interface";
+import {NgxGridColumnSize, NgxGridGapSize, NgxGridStrategy} from "../../interfaces/grid.interface";
+import {NgxGridColumn, NgxGridGroup, NgxGridItemTemplate} from "../../interfaces/grid-item.interface";
 import {Subscription} from "rxjs";
+import {NgxGridRef} from "../../services/grid-ref.service";
 
 export type NgxGridItemType = NgxGridColumnDirective|NgxGridGroupDirective;
 
 @Directive()
-export class NgxGridItem implements INgxGridItem, OnDestroy, OnChanges {
+export class NgxGridItemDirective implements NgxGridItemTemplate, OnDestroy, OnChanges {
   readonly type: 'column'|'group' = 'column';
-  protected subs: Subscription[] = [];
+  protected subscriptions: Subscription[] = [];
 
   @Input('size') _size?: NgxGridColumnSize|null;
   @Input('offset') _offset?: NgxGridColumnSize|null;
@@ -57,69 +57,17 @@ export class NgxGridItem implements INgxGridItem, OnDestroy, OnChanges {
   @Input('4xl:order') _4xlOrder?: number|null;
 
   constructor(
-    protected readonly elementRef: ElementRef<HTMLElement>,
+    public readonly elementRef: ElementRef<HTMLElement>,
     protected readonly gridRef: NgxGridRef,
   ){}
-
-  apply(ngClass: { [klass: string]: any }, ngStyle: { [klass: string]: any }, ngxStyleVariables: { [variable: string]: string|number|boolean|null|undefined; }) {
-
-    // apply classes
-    if(ngClass){
-      Object.entries(ngClass).map(([key, value]) => {
-        switch(!!value){
-          case true: {
-            this.elementRef.nativeElement.classList.add(key);
-            break;
-          }
-          case false: {
-            this.elementRef.nativeElement.classList.remove(key);
-            break;
-          }
-        }
-      });
-    }
-
-    // apply styles
-    if(ngStyle){
-      Object.entries(ngStyle).map(([key, value]) => {
-        switch(!!value){
-          case true: {
-            this.elementRef.nativeElement.style.setProperty(key, value);
-            break;
-          }
-          case false: {
-            this.elementRef.nativeElement.style.removeProperty(key);
-            break;
-          }
-        }
-      });
-    }
-
-    // apply variables
-    if(ngxStyleVariables){
-      Object.entries(ngxStyleVariables).map(([key, value]) => {
-        switch(!!value){
-          case true: {
-            this.elementRef.nativeElement.style.setProperty(key, value as string);
-            break;
-          }
-          case false: {
-            this.elementRef.nativeElement.style.removeProperty(key);
-            break;
-          }
-        }
-      });
-    }
-
-  }
 
   ngOnChanges() {
     this.gridRef.emitChange();
   }
 
   ngOnDestroy(){
-    this.subs.map(s => s.unsubscribe());
-    this.subs = [];
+    this.subscriptions.map(s => s.unsubscribe());
+    this.subscriptions = [];
   }
 
 }
@@ -127,45 +75,36 @@ export class NgxGridItem implements INgxGridItem, OnDestroy, OnChanges {
 @Directive({
   selector: 'ngx-grid-column',
   providers: [
-    { provide: NgxGridItem, useExisting: NgxGridColumnDirective }
+    { provide: NgxGridItemDirective, useExisting: NgxGridColumnDirective }
   ],
-  host: {
-    '[class.ngx-grid-column]': 'true',
-  }
 })
-export class NgxGridColumnDirective extends NgxGridItem implements INgxGridColumn, OnChanges {
+export class NgxGridColumnDirective extends NgxGridItemDirective implements NgxGridColumn, OnChanges {
   override readonly type = 'column';
 }
 
 @Directive({
   selector: 'ngx-grid-group',
   providers: [
-    { provide: NgxGridItem, useExisting: NgxGridGroupDirective }
+    { provide: NgxGridItemDirective, useExisting: NgxGridGroupDirective }
   ],
-  host: {
-    '[class.ngx-grid-group]': 'true',
-  }
 })
-export class NgxGridGroupDirective extends NgxGridItem implements INgxGridGroup, AfterContentInit {
+export class NgxGridGroupDirective extends NgxGridItemDirective implements NgxGridGroup, AfterContentInit {
   override readonly type = 'group';
 
-  @ContentChildren(NgxGridItem) private itemsRef!: QueryList<NgxGridItemType>;
+  @ContentChildren(NgxGridItemDirective) private itemsRef!: QueryList<NgxGridItemType>;
 
-  @Input() strategy?: NgxGridStrategy|null;
-  @Input() gap?: string|number|false|null;
-  @Input() columnGap?: string|number|false|null;
-  @Input() rowGap?: string|number|false|null;
+  @Input() strategy?: NgxGridStrategy;
+  @Input() gap?: NgxGridGapSize;
+  @Input() columnGap?: NgxGridGapSize;
+  @Input() rowGap?: NgxGridGapSize;
   @Input() rows?: string[]|null;
   @Input() autoRows?: boolean|null;
 
-  ngAfterContentInit() {
-    this.subs.push(this.itemsRef.changes.subscribe(() => this.gridRef.emitChange()));
-    this.gridRef.getChanges().subscribe(() => this.build());
+  get items(): NgxGridItemType[] {
+    return this.itemsRef.toArray()
   }
 
-  private build(){
-    this.gridRef.createColumns(this, this.itemsRef.map(d => d)).map(column => {
-      column.item.apply(column.ngClass, column.ngStyle, column.ngxStyleVariables);
-    });
+  ngAfterContentInit() {
+    this.subscriptions.push(this.itemsRef.changes.subscribe(() => this.gridRef.emitChange()));
   }
 }

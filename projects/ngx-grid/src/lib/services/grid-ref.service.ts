@@ -1,141 +1,186 @@
-import {Injectable, OnDestroy} from "@angular/core";
+import {ChangeDetectorRef, Injectable, OnDestroy, Renderer2} from "@angular/core";
 import {Observable, Subject} from "rxjs";
-import {NgxGridBreakpoint, NgxGridColumnSize, NgxGridOptions} from "../interfaces/grid.interface";
+import {
+  NgxGridBreakpoint,
+  NgxGridBreakpointName,
+  NgxGridColumnSize,
+  NgxGridOptions,
+  NgxGridStyle
+} from "../interfaces/grid.interface";
 import {GRID_OPTIONS_DEFAULTS} from "../grid.constants";
-import {INgxGridColumn, INgxGridGroup, INgxGridItem} from "../interfaces/grid-item.interface";
+import {NgxGridComponent} from "../components/grid/grid.component";
+import {NgxGridGroup, NgxGridItem} from "../interfaces/grid-item.interface";
+import {sizeToPixel} from "../utils/common.utils";
 
 @Injectable()
 export class NgxGridRef implements OnDestroy {
-  private changes$ = new Subject<void>();
-  private options?: NgxGridOptions;
+  private _changes$ = new Subject<void>();
+  private _options?: Partial<NgxGridOptions>;
+
+  constructor(
+    private renderer2: Renderer2,
+    private changeDetectorRef: ChangeDetectorRef,
+  ){}
 
   /**
    * # # # # # # # # # # # # # # # # # #
    * Options
    * # # # # # # # # # # # # # # # # # #
    */
-  setOptions(options: NgxGridOptions){
-    this.options = options;
+  setGlobalOptions(options: Partial<NgxGridOptions>|null) {
+    this._options = options as any;
   }
-  getOptions(): NgxGridOptions {
+
+  getGlobalOptions(): NgxGridOptions {
     return {
-      strategy: this.options?.strategy ?? GRID_OPTIONS_DEFAULTS.strategy,
-      baseBreakpoint: this.options?.baseBreakpoint ?? GRID_OPTIONS_DEFAULTS.baseBreakpoint,
-      baseSize: this.options?.baseSize ?? GRID_OPTIONS_DEFAULTS.baseSize,
-      gap: this.options?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
-      columnGap: this.options?.columnGap ?? this.options?.gap ?? GRID_OPTIONS_DEFAULTS.columnGap ?? GRID_OPTIONS_DEFAULTS.gap,
-      rowGap: this.options?.rowGap ?? this.options?.gap ?? GRID_OPTIONS_DEFAULTS.rowGap ?? GRID_OPTIONS_DEFAULTS.gap,
-      autoRows: this.options?.autoRows ?? GRID_OPTIONS_DEFAULTS.autoRows,
+      strategy: this._options?.strategy ?? GRID_OPTIONS_DEFAULTS.strategy,
+      baseBreakpoint: this._options?.baseBreakpoint ?? GRID_OPTIONS_DEFAULTS.baseBreakpoint,
+      baseSize: this._options?.baseSize ?? GRID_OPTIONS_DEFAULTS.baseSize,
+      gap: this._options?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
+      columnGap: this._options?.columnGap ?? this._options?.gap ?? GRID_OPTIONS_DEFAULTS.columnGap ?? GRID_OPTIONS_DEFAULTS.gap,
+      rowGap: this._options?.rowGap ?? this._options?.gap ?? GRID_OPTIONS_DEFAULTS.rowGap ?? GRID_OPTIONS_DEFAULTS.gap,
+      autoRows: this._options?.autoRows ?? GRID_OPTIONS_DEFAULTS.autoRows,
+      breakpoints: {
+        xs: this._options?.breakpoints?.xs ?? GRID_OPTIONS_DEFAULTS.breakpoints.xs,
+        sm: this._options?.breakpoints?.sm ?? GRID_OPTIONS_DEFAULTS.breakpoints.sm,
+        md: this._options?.breakpoints?.md ?? GRID_OPTIONS_DEFAULTS.breakpoints.md,
+        lg: this._options?.breakpoints?.lg ?? GRID_OPTIONS_DEFAULTS.breakpoints.lg,
+        xl: this._options?.breakpoints?.xl ?? GRID_OPTIONS_DEFAULTS.breakpoints.xl,
+        '2xl': this._options?.breakpoints?.['2xl'] ?? GRID_OPTIONS_DEFAULTS.breakpoints['2xl'],
+        '3xl': this._options?.breakpoints?.['3xl'] ?? GRID_OPTIONS_DEFAULTS.breakpoints['3xl'],
+        '4xl': this._options?.breakpoints?.['4xl'] ?? GRID_OPTIONS_DEFAULTS.breakpoints['4xl'],
+      }
     }
   }
 
   /**
    * # # # # # # # # # # # # # # # # # #
-   * Helpers
+   * Builder
    * # # # # # # # # # # # # # # # # # #
    */
-  private createColumnClasses(item: INgxGridColumn|INgxGridGroup, group?: INgxGridGroup|null): { [klass: string]: any } {
-    return item.type === 'group'
-      ? {
-        'ngx-grid-strategy-container': (item.strategy ?? group?.strategy ?? this.getOptions().strategy) === 'container',
-        'ngx-grid-column-gap': (item.columnGap ?? item.gap ?? group?.columnGap ?? group?.gap ?? this.getOptions().columnGap) !== false,
-        'ngx-grid-row-gap': (item.rowGap ?? item.gap ?? group?.rowGap ?? group?.gap ?? this.getOptions().rowGap) !== false,
-        'ngx-grid-auto-rows': group?.autoRows ?? this.getOptions().autoRows ?? true,
-      }
-      : {
-        'ngx-grid-column-gap': (group?.columnGap ?? group?.gap ?? this.getOptions().columnGap) !== false,
-        'ngx-grid-row-gap': (group?.rowGap ?? group?.gap ?? this.getOptions().rowGap) !== false,
-        'ngx-grid-auto-rows': group?.autoRows ?? this.getOptions().autoRows ?? true,
-      }
+  createComponent(component: NgxGridComponent): void  {
+      this.createColumns(null, [component]);
   }
 
-  private createColumnVariables(item: INgxGridColumn|INgxGridGroup, group?: INgxGridGroup|null): { [variable: string]: string|number|boolean|null|undefined; } {
-    const columnGap = (item.type === 'group' ? item.columnGap ?? item.gap ?? null : null) ?? group?.columnGap ?? group?.gap ?? this.getOptions().columnGap;
-    const rowGap = (item.type === 'group' ? item.rowGap ?? item.gap ?? null : null) ?? group?.columnGap ?? group?.gap ?? this.getOptions().rowGap;
-    return {
-      '--ngx-grid-column-gap': typeof columnGap === 'number' ? `${columnGap}px` : columnGap || '0px',
-      '--ngx-grid-row-gap': typeof rowGap === 'number' ? `${rowGap}px` : rowGap || '0px',
-    }
-  }
-
-  private createColumnStyles(rows?: string[]|null): { [style: string]: any } {
-    return {
-      'grid-template-rows': rows ? rows.join(" ") : null,
-    }
-  }
-
-  createColumns(group: INgxGridGroup|null, items: INgxGridItem[]): GridItem[] {
-    let index = -1;
+  createColumns(group: NgxGridGroup|null, items: NgxGridItem[]): GridItem[] {
     const columns: GridItem[] = [];
-    items.map(item => {
+    this.sortItems(items, group).map((i, index) => {
+      if(i.breakpoint){
 
-      // create base object for item
-      const column: GridItem = {
-        index: ++index,
-        type: item.type,
-        item: item,
-        ngClass: this.createColumnClasses(item as any, group),
-        ngStyle: this.createColumnStyles(item?.type === 'group' ? (item as any)?.rows : null),
-        ngxStyleVariables: this.createColumnVariables(item as any, group),
-        positions: {}
+        // get item
+        const { item, breakpoint } = i;
+
+        // create children
+        if(item.type === 'group'){
+          this.createColumns(item, item.items);
+        }
+
+        // create position
+        const position = this.createPositionStyles(breakpoint, columns);
+
+        // create column
+        const column: GridItem = {
+          index: index,
+          type: item.type,
+          item: item,
+          styles: this.createBaseStyles(item, position, group),
+          position: position,
+        };
+
+        // apply styles
+        Object.entries(column.styles).map(([key, value]) => {
+          if(value !== null && value !== undefined){
+            this.renderer2.setStyle(item.elementRef.nativeElement, key, value);
+          }else{
+            this.renderer2.removeStyle(item.elementRef.nativeElement, key);
+          }
+        });
+
+        // add column to array
+        columns.push(column);
+
       }
-
-      // apply positions
-      this.applyPositions(item, column, columns);
-
-      // add to columns
-      columns.push(column);
-
     });
     return columns;
   }
 
-  applyPositions(item: INgxGridItem, column: GridItem, columns: GridItem[]): void {
+  private createBaseStyles(item: NgxGridItem, position: GridItemPosition, group?: NgxGridGroup|null): NgxGridStyle {
 
-    // get the previous column as reference
-    const previousColumn = columns.length ? columns[columns.length - 1] : null;
+    // create empty style object
+    const styles: NgxGridStyle = {};
 
-    // build breakpoints
-    const breakpoints = this.createBreakpoints(item);
+    // add base style for group
+    if(item.type === 'group'){
+      styles['display'] = 'grid';
+      styles['align-items'] = 'start';
+      styles['width'] = '100%';
+      styles['height'] = '100%';
+      styles['max-height'] = '100%';
+      styles['grid-template-columns'] = `repeat(${this.getGlobalOptions().baseSize}, 1fr)`;
+      styles['grid-template-rows'] = item?.type === 'group' ? item?.rows?.join(' ') : null;
+    }
 
-    // reset classList and styleList
-    column.positions = {};
+    // set options for group
+    if(item.type === 'group'){
+      styles['container-type'] = this.getGlobalOptions().strategy === 'container' ? 'inline-size' : null;
+      styles['grid-auto-rows'] = item?.autoRows ?? group?.autoRows ?? this.getGlobalOptions().autoRows ? 'min-content' : null;
+    }
 
-    // add size
-    breakpoints.filter(b => b.size).map(b => {
-      column.positions[b.name] = this.createPosition(b.size || this.getOptions().baseSize, b.offset || 0, previousColumn?.positions?.[b.name]);
+    // set gaps for group
+    if(item.type === 'group'){
+      const columnGap = (item.type === 'group' ? item.columnGap ?? item.gap ?? null : null) ?? group?.columnGap ?? group?.gap ?? this.getGlobalOptions().columnGap;
+      const rowGap = (item.type === 'group' ? item.rowGap ?? item.gap ?? null : null) ?? group?.columnGap ?? group?.gap ?? this.getGlobalOptions().rowGap;
 
-      column.ngClass[`ngx-grid-size-${b.name}-${b.size}`] = true;
-      column.ngxStyleVariables[`--ngx-grid-row-start-${b.name}`] = column.positions[b.name].rowStart.toString() || '0';
-      column.ngxStyleVariables[`--ngx-grid-row-end-${b.name}`] = column.positions[b.name].rowEnd.toString() || '0';
-      column.ngxStyleVariables[`--ngx-grid-column-start-${b.name}`] = column.positions[b.name].columnStart.toString() || '0';
-      column.ngxStyleVariables[`--ngx-grid-column-end-${b.name}`] = column.positions[b.name].columnEnd.toString() || '0';
-    });
+      styles['column-gap'] = typeof columnGap === 'number' ? `${columnGap}px` : columnGap || '0px';
+      styles['row-gap'] = typeof rowGap === 'number' ? `${rowGap}px` : rowGap || '0px';
+    }
 
-    // add order
-    breakpoints.filter(b => b.order).map(b => {
-      column.ngClass[`ngx-grid-order-${b.name}`] = true;
-      column.ngxStyleVariables[`--ngx-grid-order-${b.name}`] = b.order?.toString() || '0';
-    });
+    // set base style for column
+    if(item.type === 'column'){
+      styles['display'] = 'block';
+      styles['width'] = '100%';
+      styles['max-width'] = '100%';
+      styles['height'] = '100%';
+    }
+
+    // apply position
+    styles['grid-row-start'] = position.rowStart.toString() || '';
+    styles['grid-row-end'] = position.rowEnd.toString() || '';
+    styles['grid-column-start'] = position.columnStart.toString() || '';
+    styles['grid-column-end'] = position.columnEnd.toString() || '';
+
+    // return styles
+    return styles;
 
   }
 
-  createPosition(size: NgxGridColumnSize, offset: NgxGridColumnSize|number, previousPosition?: GridItemPosition|null): GridItemPosition {
+  private createPositionStyles(breakpoint: NgxGridBreakpoint, columns: GridItem[]): GridItemPosition {
+    const previousColumn = columns.length ? columns[columns.length - 1] : null;
+    return this.createPosition(
+      breakpoint.size || this.getGlobalOptions().baseSize,
+      breakpoint.offset || 0,
+      breakpoint.order || 999,
+      previousColumn?.position
+    );
+  }
+
+  private createPosition(size: NgxGridColumnSize, offset: NgxGridColumnSize|number, order: number, previousPosition?: GridItemPosition|null): GridItemPosition {
 
     // create previous position
     const prevPosition: Omit<GridItemPosition, 'columnStart'> = {
       rowStart: previousPosition?.rowStart || 1,
       rowEnd: previousPosition?.rowEnd || 1,
       columnEnd: (previousPosition?.columnEnd || 1) + offset,
+      order: previousPosition?.order || 999,
     };
 
     // get positions of previous item
     const position: GridItemPosition = {
-      rowStart: 0, rowEnd: 0, columnStart: 0, columnEnd: 0
+      rowStart: 0, rowEnd: 0, columnStart: 0, columnEnd: 0, order: order,
     };
 
     // calculate position
-    if((prevPosition.columnEnd + size) <= (this.getOptions().baseSize + 1)){
+    if((prevPosition.columnEnd + size) <= (this.getGlobalOptions().baseSize + 1)){
       position.rowStart = prevPosition.rowStart;
       position.rowEnd = prevPosition.rowEnd;
       position.columnStart = prevPosition.columnEnd;
@@ -152,7 +197,38 @@ export class NgxGridRef implements OnDestroy {
 
   }
 
-  createBreakpoints(item: INgxGridItem): NgxGridBreakpoint[] {
+  /**
+   * # # # # # # # # # # # # # # # # # #
+   * Helpers
+   * # # # # # # # # # # # # # # # # # #
+   */
+  private sortItems(items: NgxGridItem[], group?: NgxGridGroup|null): { item: NgxGridItem, breakpoint: NgxGridBreakpoint|null }[] {
+     return items
+       .map(item => ({ item, breakpoint: this.getNearestBreakpoint(item, group) }))
+       .filter(i => !!i.breakpoint)
+       .sort((a, b) => {
+         const aOrder = a.breakpoint?.order as number;
+         const bOrder = b.breakpoint?.order as number;
+         if(aOrder < bOrder) return -1;
+         if(aOrder > bOrder) return 1;
+         return 0;
+       });
+  }
+
+  private getNearestBreakpoint(item: NgxGridItem, group?: NgxGridGroup|null): NgxGridBreakpoint|null {
+    const containerWidth = this.getContainerWidth(group);
+    const breakpoints = this.createBreakpoints(item);
+    let nearestBreakpoint: NgxGridBreakpoint|null = null;
+    for(let breakpoint of breakpoints.values()){
+      const thisWidth = sizeToPixel(breakpoint.width);
+      if(breakpoint.size && thisWidth <= containerWidth){
+        nearestBreakpoint = breakpoint;
+      }
+    }
+    return nearestBreakpoint;
+  }
+
+  private createBreakpoints(item: NgxGridItem): NgxGridBreakpoint[] {
     return [
       this.createBreakpoint(item, 'xs', item._xs, item._xsOffset, item._xsOrder),
       this.createBreakpoint(item, 'sm', item._sm, item._smOffset, item._smOrder),
@@ -165,18 +241,23 @@ export class NgxGridRef implements OnDestroy {
     ];
   }
 
-  createBreakpoint(item: INgxGridItem, name: string, size?: NgxGridColumnSize|null, offset?: NgxGridColumnSize|null, order?: number|null): NgxGridBreakpoint {
+  private createBreakpoint(item: NgxGridItem, name: NgxGridBreakpointName, size?: NgxGridColumnSize|null, offset?: NgxGridColumnSize|null, order?: number|null): NgxGridBreakpoint {
     const breakpoint: NgxGridBreakpoint = { name, size, offset, order };
-    if(name == this.getOptions().baseBreakpoint){
-      breakpoint.size = breakpoint.size ?? item._size ?? this.getOptions().baseSize;
+    if(name === this.getGlobalOptions().baseBreakpoint){
+      breakpoint.size = breakpoint.size ?? item._size ?? this.getGlobalOptions().baseSize;
       breakpoint.order = breakpoint.order ?? item._order;
       breakpoint.offset = breakpoint.offset ?? item._offset;
     }
     switch(name){
-      case 'xs': breakpoint.size = breakpoint.size || this.getOptions().baseSize; break;
+      case 'xs': breakpoint.size = breakpoint.size || this.getGlobalOptions().baseSize; break;
     }
-    breakpoint.order = breakpoint.order ?? 0;
+    breakpoint.width = this.getGlobalOptions().breakpoints[name];
+    breakpoint.order = breakpoint.order ?? 999;
     return breakpoint;
+  }
+
+  private getContainerWidth(group?: NgxGridGroup|null): number {
+    return this.getGlobalOptions().strategy === 'container' ? group?.elementRef.nativeElement.offsetWidth || window.innerWidth : window.innerWidth;
   }
 
   /**
@@ -185,10 +266,10 @@ export class NgxGridRef implements OnDestroy {
    * # # # # # # # # # # # # # # # # # #
    */
   getChanges(): Observable<void> {
-    return this.changes$ as Observable<void>;
+    return this._changes$ as Observable<void>;
   }
   emitChange(): void {
-    this.changes$.next();
+    this._changes$.next();
   }
 
   /**
@@ -196,27 +277,27 @@ export class NgxGridRef implements OnDestroy {
    * Others
    * # # # # # # # # # # # # # # # # # #
    */
-  ngOnDestroy(){
-    this.changes$.complete();
+  markForCheck(): void {
+    this.changeDetectorRef.markForCheck();
   }
 
+  ngOnDestroy(): void{
+    this._changes$.complete();
+  }
 }
 
 interface GridItem {
   index: number;
-  item: INgxGridItem;
+  item: NgxGridItem;
   type: 'group'|'column';
-  ngClass: { [klass: string]: any };
-  ngStyle: { [klass: string]: any };
-  ngxStyleVariables: { [variable: string]: string|number|boolean|null|undefined; };
-  positions: GridItemPositions;
+  styles: NgxGridStyle;
+  position: GridItemPosition;
 }
-
-type GridItemPositions = { [size: string]: GridItemPosition };
 
 interface GridItemPosition {
   rowStart: number;
   rowEnd: number;
   columnStart: number;
   columnEnd: number;
+  order: number;
 }
