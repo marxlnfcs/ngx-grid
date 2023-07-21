@@ -128,7 +128,7 @@ Sizes: `1-12`
 Structural directive to add/remove an element if the defined breakpoint fits.
 ```angular2html
 <div *ngxScreenSize"'xs'">
-  ...
+...
 </div>
 ```
 
