@@ -1,0 +1,62 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #efefef;
+  font-family: Arial, serif;
+  padding: 5rem 10rem;
+  user-select: none;
+}
+
+.container, .column {
+  display: block;
+  width: 100%;
+  border-radius: 1rem;
+  background-color: white;
+  padding: 1.5rem;
+}
+
+.title {
+  padding-bottom: 1.5rem;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.column {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: .5rem;
+}
+
+.green {
+  background-color: #16a34a;
+  color: white;
+}
+
+.blue {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.orange {
+  background-color: #f97316;
+  color: white;
+}
+
+.yellow {
+  background-color: #eab308;
+  color: white;
+}
+
+.red {
+  background-color: #dc2626;
+  color: white;
+}
+
+.purple {
+  background-color: #a855f7;
+  color: white;
+}

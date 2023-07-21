@@ -1,0 +1,8 @@
+<div class="ngx-grid-alt"
+     [class.ngx-grid-alt-auto-rows]="options.autoRows"
+     [class.ngx-grid-alt-column-gap]="options.columnGap !== false"
+     [class.ngx-grid-alt-row-gap]="options.rowGap !== false"
+     [attr.style]="styles"
+>
+  <ng-content select="ngx-grid-alt-group, ngx-grid-alt-column"></ng-content>
+</div>

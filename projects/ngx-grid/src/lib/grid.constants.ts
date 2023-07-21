@@ -6,7 +6,17 @@ export const GRID_OPTIONS_DEFAULTS: NgxGridOptions = {
   baseBreakpoint: 'xs',
   baseSize: 12,
   gap: '1rem',
-  autoRows: true
+  autoRows: true,
+  breakpoints: {
+    xs: 0,
+    sm: 481,
+    md: 769,
+    lg: 1025,
+    xl: 1201,
+    '2xl': 1400,
+    '3xl': 1600,
+    '4xl': 1800,
+  },
 }
 
-export const GRID_OPTIONS = new InjectionToken<Partial<NgxGridOptions>>('ngx-grid-options');
+export const GRID_OPTIONS = new InjectionToken<Partial<NgxGridOptions>>('ngx-grid-alt-options');

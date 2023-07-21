@@ -9,16 +9,22 @@ import {
   Optional,
   SimpleChanges
 } from '@angular/core';
-import {NgxGridBreakpointName, NgxGridColumnSizeEven, NgxGridOptions} from "../../interfaces/grid.interface";
+import {
+  NgxGridBreakpoint,
+  NgxGridBreakpointName,
+  NgxGridColumnSize,
+  NgxGridColumnSizeEven,
+  NgxGridOptions
+} from "../../interfaces/grid.interface";
 import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../../grid.constants";
 
 @Component({
-  selector: 'ngx-grid-centered',
-  templateUrl: './grid-centered.component.html',
-  styleUrls: ['./grid-centered.component.scss'],
+  selector: 'ngx-grid-alt-centered',
+  templateUrl: './grid-alt-centered.component.html',
+  styleUrls: ['./grid-alt-centered.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NgxGridCenteredComponent implements OnInit, OnChanges {
+export class NgxGridAltCenteredComponent implements OnInit, OnChanges {
   @Input() baseBreakpoint?: NgxGridBreakpointName|null;
   @Input() baseSize?: NgxGridColumnSizeEven|null;
   @Input() autoRows?: boolean|null;
@@ -33,15 +39,7 @@ export class NgxGridCenteredComponent implements OnInit, OnChanges {
   @Input('3xl:size') size_3xl?: NgxGridColumnSizeEven|null;
   @Input('4xl:size') size_4xl?: NgxGridColumnSizeEven|null;
 
-  offset?: NgxGridColumnSizeEven|null;
-  offset_xs?: NgxGridColumnSizeEven|null;
-  offset_sm?: NgxGridColumnSizeEven|null;
-  offset_md?: NgxGridColumnSizeEven|null;
-  offset_lg?: NgxGridColumnSizeEven|null;
-  offset_xl?: NgxGridColumnSizeEven|null;
-  offset_2xl?: NgxGridColumnSizeEven|null;
-  offset_3xl?: NgxGridColumnSizeEven|null;
-  offset_4xl?: NgxGridColumnSizeEven|null;
+  componentClasses: { [key: string]: boolean } = {};
 
   constructor(
     @Optional() @Inject(GRID_OPTIONS) private gridOptions: NgxGridOptions,
@@ -57,27 +55,6 @@ export class NgxGridCenteredComponent implements OnInit, OnChanges {
     this.changeDetectorRef.markForCheck();
   }
 
-  private build(){
-    this.offset = this.buildOffset(this.size);
-    this.offset_xs = this.buildOffset(this.size_xs);
-    this.offset_sm = this.buildOffset(this.size_sm);
-    this.offset_md = this.buildOffset(this.size_md);
-    this.offset_lg = this.buildOffset(this.size_lg);
-    this.offset_xl = this.buildOffset(this.size_xl);
-    this.offset_2xl = this.buildOffset(this.size_2xl);
-    this.offset_3xl = this.buildOffset(this.size_3xl);
-    this.offset_4xl = this.buildOffset(this.size_4xl);
-  }
-
-  private buildOffset(size?: NgxGridColumnSizeEven|null): NgxGridColumnSizeEven|null {
-    const baseSize = this.getOptions().baseSize as number;
-    const selectedSize = size ? size >= baseSize ? baseSize : size : null;
-    if(!selectedSize || selectedSize >= baseSize){
-      return null;
-    }
-    return ((baseSize - selectedSize) / 2) as NgxGridColumnSizeEven;
-  }
-
   private getOptions(): NgxGridOptions {
     return {
       strategy: this.gridOptions?.strategy ?? GRID_OPTIONS_DEFAULTS.strategy,
@@ -91,4 +68,34 @@ export class NgxGridCenteredComponent implements OnInit, OnChanges {
     }
   }
 
+  private build(){
+    const breakpoints = this.createBreakpoints();
+    breakpoints.filter(b => b.size).map(b => {
+      this.componentClasses[`ngx-grid-size-${b.name}-${b.size}`] = true;
+    });
+  }
+
+  private createBreakpoints(): NgxGridBreakpoint[] {
+    return [
+      this.createBreakpoint( 'xs', this.size_xs),
+      this.createBreakpoint( 'sm', this.size_sm),
+      this.createBreakpoint( 'md', this.size_md),
+      this.createBreakpoint( 'lg', this.size_lg),
+      this.createBreakpoint( 'xl', this.size_xl),
+      this.createBreakpoint( '2xl', this.size_2xl),
+      this.createBreakpoint( '3xl', this.size_3xl),
+      this.createBreakpoint( '4xl', this.size_4xl),
+    ];
+  }
+
+  createBreakpoint(name: string, size?: NgxGridColumnSize|null): NgxGridBreakpoint {
+    const breakpoint: NgxGridBreakpoint = { name, size };
+    if(name == this.getOptions().baseBreakpoint){
+      breakpoint.size = breakpoint.size ?? this.size ?? this.getOptions().baseSize;
+    }
+    switch(name){
+      case 'xs': breakpoint.size = breakpoint.size || this.getOptions().baseSize; break;
+    }
+    return breakpoint;
+  }
 }

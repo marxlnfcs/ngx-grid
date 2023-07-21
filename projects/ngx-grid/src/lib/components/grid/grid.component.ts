@@ -1,111 +1,94 @@
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ContentChildren,
+  Component, ContentChildren,
+  ElementRef,
   Inject,
   Input,
   OnChanges,
   OnDestroy,
-  Optional,
-  QueryList,
+  Optional, QueryList,
   SimpleChanges
 } from "@angular/core";
+import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../../grid.constants";
 import {
   NgxGridBreakpointName,
-  NgxGridColumnSizeEven,
+  NgxGridColumnSizeEven, NgxGridGapSize,
   NgxGridOptions,
-  NgxGridStrategy
+  NgxGridStrategy,
+  NgxGridStyle
 } from "../../interfaces/grid.interface";
-import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../../grid.constants";
+import {debounceTime, Subscription} from "rxjs";
+import {createEvent} from "../../utils/event.utils";
 import {NgxGridRef} from "../../services/grid-ref.service";
-import {NgxGridItem, NgxGridItemType} from "./grid.directive"
-import {Subscription} from "rxjs";
-import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
+import {NgxGridGroup} from "../../interfaces/grid-item.interface";
+import {NgxGridItemDirective, NgxGridItemType} from "./grid.directive";
 
 @Component({
   selector: 'ngx-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [NgxGridRef],
-  host: {
-    '[class.ngx-grid-strategy-container]': 'options.strategy === "container"'
-  }
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NgxGridComponent implements AfterContentInit, OnChanges, OnDestroy {
-  @ContentChildren(NgxGridItem) private itemsRef!: QueryList<NgxGridItemType>;
+export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChanges, OnDestroy {
+  readonly type = 'group';
+  @ContentChildren(NgxGridItemDirective) private itemsRef!: QueryList<NgxGridItemType>;
 
-  @Input() gap?: string|number|false|null;
-  @Input() columnGap?: string|number|false|null;
-  @Input() rowGap?: string|number|false|null;
-  @Input() rows?: string[];
+  subscriptions: Subscription[] = [];
+
   @Input() baseBreakpoint?: NgxGridBreakpointName|null;
   @Input() baseSize?: NgxGridColumnSizeEven|null;
   @Input() strategy?: NgxGridStrategy|null;
-  @Input() autoRows?: boolean|null;
 
-  gridSubs: Subscription[] = [];
+  @Input() gap?: NgxGridGapSize;
+  @Input() columnGap?: NgxGridGapSize;
+  @Input() rowGap?: NgxGridGapSize;
+  @Input() rows?: string[]|null;
+  @Input() autoRows?: boolean|null;
 
   constructor(
     @Optional() @Inject(GRID_OPTIONS) private gridOptions: NgxGridOptions,
-    private changeDetectorRef: ChangeDetectorRef,
-    private sanitizer: DomSanitizer,
+    public readonly elementRef: ElementRef<HTMLElement>,
     private gridRef: NgxGridRef,
-  ){
-    this.gridRef.setOptions(this.options);
+  ){}
+
+  get items(): NgxGridItemType[] {
+    return this.itemsRef.toArray()
   }
 
   ngAfterContentInit(){
-    this.gridSubs.push(this.itemsRef.changes.subscribe(() => this.gridRef.emitChange()));
-    this.gridSubs.push(this.gridRef.getChanges().subscribe(() => this.build()));
+    this.subscriptions.push(createEvent(window, 'resize', this.constructor.name).subscribe(() => this.gridRef.emitChange()));
+    this.subscriptions.push(this.gridRef.getChanges().subscribe(() => this.build()));
     this.gridRef.emitChange();
-    this.changeDetectorRef.markForCheck();
+    this.gridRef.markForCheck();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.gridRef.setOptions(this.options);
     this.gridRef.emitChange();
-  }
-
-  ngOnDestroy() {
-    this.gridRef.ngOnDestroy();
-    this.gridSubs.map(s => s.unsubscribe());
-    this.gridSubs = [];
-  }
-
-  private build(){
-    this.gridRef.createColumns(null, this.itemsRef.map(d => d)).map(column => {
-      column.item.apply(column.ngClass, column.ngStyle, column.ngxStyleVariables);
-    });
-    this.changeDetectorRef.markForCheck();
   }
 
   get options(): NgxGridOptions {
     return {
-      strategy: this.strategy ?? this.gridOptions?.strategy ?? GRID_OPTIONS_DEFAULTS.strategy,
-      baseBreakpoint: this.baseBreakpoint ?? this.gridOptions?.baseBreakpoint ?? GRID_OPTIONS_DEFAULTS.baseBreakpoint,
-      baseSize: this.baseSize ?? this.gridOptions?.baseSize ?? GRID_OPTIONS_DEFAULTS.baseSize,
+      strategy: this.strategy ?? this.gridOptions?.strategy,
+      baseBreakpoint: this.baseBreakpoint ?? this.gridOptions?.baseBreakpoint,
+      baseSize: this.baseSize ?? this.gridOptions?.baseSize,
       gap: this.gap ?? this.gridOptions?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
-      columnGap: this.columnGap ?? this.gridOptions?.columnGap ?? this.gap ?? this.gridOptions?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
-      rowGap: this.rowGap ?? this.gridOptions?.rowGap ?? this.gap ?? this.gridOptions?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
-      autoRows: this.autoRows ?? this.gridOptions?.autoRows ?? GRID_OPTIONS_DEFAULTS.autoRows,
-    }
+      columnGap: this.columnGap ?? this.gridOptions?.columnGap ?? this.gap ?? this.gridOptions?.gap,
+      rowGap: this.rowGap ?? this.gridOptions?.rowGap ?? this.gap ?? this.gridOptions?.gap,
+      autoRows: this.autoRows ?? this.gridOptions?.autoRows,
+      breakpoints: this.gridOptions?.breakpoints
+    };
   }
 
-  get styles(): SafeStyle {
-    const styles: any = {
-      'grid-template-rows': this.rows ? this.rows.join(' ') : null,
-      '--ngx-grid-column-gap': this.options.columnGap,
-      '--ngx-grid-row-gap': this.options.rowGap,
-      '--ngx-grid-base-size': this.options.baseSize,
-    };
-    return this.sanitizer.bypassSecurityTrustStyle(
-      Object.entries(styles)
-        .filter(([key, value]) => !!value)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(';')
-    );
+  ngOnDestroy() {
+    this.gridRef.ngOnDestroy();
+    this.subscriptions.map(s => s.unsubscribe());
+    this.subscriptions = [];
+  }
+
+  build(){
+    this.gridRef.setGlobalOptions(this.options);
+    this.gridRef.createComponent(this);
   }
 }

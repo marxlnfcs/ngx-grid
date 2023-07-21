@@ -1,0 +1,25 @@
+@import "../../../../scss";
+
+:host{
+  display: block;
+  width: 100%; max-width: 100%;
+  height: 100%;
+
+  .ngx-grid-centered {
+    display: block;
+    width: 100%; max-width: 100%;
+    height: 100%;
+  }
+
+  @each $breakpoint, $minWidth in $NGX_GRID_BREAKPOINTS {
+    @media screen and (min-width: $minWidth) {
+      @for $size from 1 through 12 {
+        .ngx-grid-centered.ngx-grid-size-#{$breakpoint}-#{$size} {
+          width: 100%;
+          height: 100%;
+          padding: 0 calc((100% - ((100% / 12) * $size)) / 2);
+        }
+      }
+    }
+  }
+}

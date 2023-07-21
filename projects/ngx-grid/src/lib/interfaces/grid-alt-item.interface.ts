@@ -1,9 +1,7 @@
-import {NgxGridColumnSize, NgxGridGapSize} from "./grid.interface";
-import {ElementRef} from "@angular/core";
-import {NgxGridItemType} from "../components/grid/grid.directive";
+import {NgxGridClass, NgxGridColumnSize, NgxGridStrategy, NgxGridStyle, NgxGridVariable} from "./grid.interface";
 
-export interface NgxGridItemTemplate {
-  elementRef: ElementRef<HTMLElement>;
+export interface NgxGridAltItem {
+  type: 'column'|'group';
 
   _size?: NgxGridColumnSize|null;
   _offset?: NgxGridColumnSize|null;
@@ -40,21 +38,21 @@ export interface NgxGridItemTemplate {
   _4xl?: NgxGridColumnSize|null;
   _4xlOffset?: NgxGridColumnSize|null;
   _4xlOrder?: number|null;
+
+  apply(ngClass: NgxGridClass, ngStyle: NgxGridStyle, ngxStyleVariables: NgxGridVariable): void;
 }
 
-export interface NgxGridGroup extends NgxGridItemTemplate {
+export interface NgxGridAltGroup extends NgxGridAltItem {
   readonly type: 'group';
 
-  gap?: NgxGridGapSize;
-  columnGap?: NgxGridGapSize;
-  rowGap?: NgxGridGapSize;
+  strategy?: NgxGridStrategy|null;
+  gap?: string|number|false|null;
+  columnGap?: string|number|false|null;
+  rowGap?: string|number|false|null;
   rows?: string[]|null;
   autoRows?: boolean|null;
-  items: NgxGridItemType[];
 }
 
-export interface NgxGridColumn extends NgxGridItemTemplate {
+export interface NgxGridAltColumn extends NgxGridAltItem {
   readonly type: 'column';
 }
-
-export type NgxGridItem = NgxGridGroup|NgxGridColumn;
