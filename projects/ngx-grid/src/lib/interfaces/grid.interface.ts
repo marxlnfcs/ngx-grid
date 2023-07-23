@@ -6,14 +6,6 @@ export type NgxGridBreakpointSize = number|`${number}px`|`${number}rem`|`${numbe
 export type NgxGridGapSize = NgxGridBreakpointSize|false|null;
 export type NgxGridClass = { [variable: string]: boolean|null|undefined; };
 export type NgxGridStyle = { [variable: string]: string|null|undefined; };
-export type NgxGridVariable = { [variable: string]: string|null|undefined; };
-
-export interface NgxGridAltBreakpoint {
-  name: string;
-  size?: NgxGridColumnSize|null;
-  offset?: NgxGridColumnSize|null;
-  order?: number|null;
-}
 
 export interface NgxGridBreakpoint {
   name: string;
@@ -24,14 +16,20 @@ export interface NgxGridBreakpoint {
 }
 
 export interface NgxGridBreakpoints {
-  xs?: NgxGridBreakpointSize;
-  sm?: NgxGridBreakpointSize;
-  md?: NgxGridBreakpointSize;
-  lg?: NgxGridBreakpointSize;
-  xl?: NgxGridBreakpointSize;
-  '2xl'?: NgxGridBreakpointSize;
-  '3xl'?: NgxGridBreakpointSize;
-  '4xl'?: NgxGridBreakpointSize;
+  /** Breakpoints */
+  xs: NgxGridBreakpointSize;
+  sm: NgxGridBreakpointSize;
+  md: NgxGridBreakpointSize;
+  lg: NgxGridBreakpointSize;
+  xl: NgxGridBreakpointSize;
+  '2xl': NgxGridBreakpointSize;
+  '3xl': NgxGridBreakpointSize;
+  '4xl': NgxGridBreakpointSize;
+
+  /** Simple breakpoints */
+  'mobile': NgxGridBreakpointSize;
+  'tablet': NgxGridBreakpointSize;
+  'desktop': NgxGridBreakpointSize;
 }
 
 export interface NgxGridOptions {

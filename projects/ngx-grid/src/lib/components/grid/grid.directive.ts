@@ -10,7 +10,7 @@ import {
 } from "@angular/core";
 import {NgxGridColumnSize, NgxGridGapSize, NgxGridStrategy} from "../../interfaces/grid.interface";
 import {NgxGridColumn, NgxGridGroup, NgxGridItemTemplate} from "../../interfaces/grid-item.interface";
-import {Subscription} from "rxjs";
+import {Subject, takeUntil} from "rxjs";
 import {NgxGridRef} from "../../services/grid-ref.service";
 
 export type NgxGridItemType = NgxGridColumnDirective|NgxGridGroupDirective;
@@ -18,7 +18,7 @@ export type NgxGridItemType = NgxGridColumnDirective|NgxGridGroupDirective;
 @Directive()
 export class NgxGridItemDirective implements NgxGridItemTemplate, OnDestroy, OnChanges {
   readonly type: 'column'|'group' = 'column';
-  protected subscriptions: Subscription[] = [];
+  protected destroy$: Subject<void> = new Subject<void>();
 
   @Input('size') _size?: NgxGridColumnSize|null;
   @Input('offset') _offset?: NgxGridColumnSize|null;
@@ -56,6 +56,18 @@ export class NgxGridItemDirective implements NgxGridItemTemplate, OnDestroy, OnC
   @Input('4xl:offset') _4xlOffset?: NgxGridColumnSize|null;
   @Input('4xl:order') _4xlOrder?: number|null;
 
+  @Input('mobile:size') _mobile?: NgxGridColumnSize|null;
+  @Input('mobile:offset') _mobileOffset?: NgxGridColumnSize|null;
+  @Input('mobile:order') _mobileOrder?: number|null;
+
+  @Input('tablet:size') _tablet?: NgxGridColumnSize|null;
+  @Input('tablet:offset') _tabletOffset?: NgxGridColumnSize|null;
+  @Input('tablet:order') _tabletOrder?: number|null;
+
+  @Input('desktop:size') _desktop?: NgxGridColumnSize|null;
+  @Input('desktop:offset') _desktopOffset?: NgxGridColumnSize|null;
+  @Input('desktop:order') _desktopOrder?: number|null;
+
   constructor(
     public readonly elementRef: ElementRef<HTMLElement>,
     protected readonly gridRef: NgxGridRef,
@@ -66,8 +78,8 @@ export class NgxGridItemDirective implements NgxGridItemTemplate, OnDestroy, OnC
   }
 
   ngOnDestroy(){
-    this.subscriptions.map(s => s.unsubscribe());
-    this.subscriptions = [];
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }
@@ -105,6 +117,6 @@ export class NgxGridGroupDirective extends NgxGridItemDirective implements NgxGr
   }
 
   ngAfterContentInit() {
-    this.subscriptions.push(this.itemsRef.changes.subscribe(() => this.gridRef.emitChange()));
+    this.itemsRef.changes.pipe(takeUntil(this.destroy$)).subscribe(() => this.gridRef.emitChange());
   }
 }

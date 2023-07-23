@@ -2,8 +2,8 @@ import {fromEvent, Observable, Subject, takeUntil} from "rxjs";
 
 let events: Array<EventItem> = [];
 
-export type EventLikeElement = Window|Document|HTMLElement;
-export interface EventItem {
+type EventLikeElement = Window|Document|HTMLElement;
+interface EventItem {
   scope: any;
   element: EventLikeElement;
   event: string;
@@ -12,14 +12,19 @@ export interface EventItem {
   destroy$: Subject<void>;
 }
 
-export interface EventListenerOptions {
+interface EventListenerOptions {
   capture?: boolean;
   passive?: boolean;
   once?: boolean;
 }
 
+/** @internal */
 export function createEvent<EventResponse = any>(element: EventLikeElement, event: string, options?: EventListenerOptions): Observable<EventResponse>;
+
+/** @internal */
 export function createEvent<EventResponse = any>(element: EventLikeElement, event: string, scope?: any|'default', options?: EventListenerOptions): Observable<EventResponse>;
+
+/** @internal */
 export function createEvent<EventResponse = any>(element: EventLikeElement, event: string, scopeOrOptions?: string|'default'|EventListenerOptions, opts?: EventListenerOptions): Observable<EventResponse> {
 
   // get options and scope
@@ -55,6 +60,7 @@ export function createEvent<EventResponse = any>(element: EventLikeElement, even
 
 }
 
+/** @internal */
 export function removeEvent(element: EventLikeElement, event: string, scope?: any): void {
   events = events.filter(item => {
     if(item.element === element && item.event === event && (!scope || (item.scope && item.scope === scope))){

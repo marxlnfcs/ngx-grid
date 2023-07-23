@@ -21,7 +21,7 @@
 ### Module:
 Import `NgxGridModule` from `@marxlnfcs/ngx-grid`
 
-```javascript
+```typescript
 import { NgxGridModule } from '@marxlnfcs/ngx-grid-alt';
 
 @NgModule({
@@ -33,7 +33,7 @@ import { NgxGridModule } from '@marxlnfcs/ngx-grid-alt';
 #
 ### Grid component
 Simple component to build a dynamic and easy to use grid layout
-```angular2html
+```html
 <ngx-grid>
   <ngx-grid-column>...</ngx-grid-column>
   <ngx-grid-column>...</ngx-grid-column>
@@ -42,16 +42,6 @@ Simple component to build a dynamic and easy to use grid layout
     <ngx-grid-column>...</ngx-grid-column>
   </ngx-grid-group>
 </ngx-grid>
-
-// Alternative css-only version
-<ngx-grid-alt>
-  <ngx-grid-alt-column>...</ngx-grid-alt-column>
-  <ngx-grid-alt-column>...</ngx-grid-alt-column>
-  <ngx-grid-alt-group>
-    <ngx-grid-alt-column>...</ngx-grid-alt-column>
-    <ngx-grid-alt-column>...</ngx-grid-alt-column>
-  </ngx-grid-alt-group>
-</ngx-grid-alt>
 ```
 
 #
@@ -62,7 +52,7 @@ Simple component to build a dynamic and easy to use grid layout
 * `gap` - Sets the spacing between all columns and rows. (default is `1rem`)
 * `columnGap` - Sets the spacing between all columns. (default is the value of the `gap` option)
 * `rowGap` - Sets the spacing between all rows. (default is the value of the `gap` option)
-* `autoRows` - Whether to use the grid-auto-rows feature. (default is `true`)
+* `autoRows` - Whether to use the grid-auto-rows feature. (default is `false`)
 * `rows` - Accepts a list of strings to define the size of each row statically. (default is `null`)
 
 #
@@ -105,7 +95,7 @@ Offset sizes: `2`, `4`, `6`, `8`, `10`
 #
 ### Grid centered component
 Simple component to center a specific size of container
-```angular2html
+```html
 <ngx-grid-centered>
   ...
 </ngx-grid-centered>
@@ -121,12 +111,12 @@ Sizes: `1-12`
 
 * `size` - Sets the width (1-12) of the column. (default is `12`)
 * `*:size` - Sets the width (1-12) of the column. (default is `12`)
-* `autoRows` - Whether to use the grid-auto-rows feature. (default is `true`)
+* `autoRows` - Whether to use the grid-auto-rows feature. (default is `false`)
 
 #
 ### *ngxScreenSize structural directive
 Structural directive to add/remove an element if the defined breakpoint fits.
-```angular2html
+```html
 <div *ngxScreenSize"'xs'">
 ...
 </div>
@@ -135,7 +125,7 @@ Structural directive to add/remove an element if the defined breakpoint fits.
 #
 ### [*.class] and [*.style] directive
 Directive to add classes and/or styles based on the breakpoint
-```angular2html
+```html
 <div
   [xs.class]="'class1, class2'"
   [xs.class]="['class1', 'class2']"
@@ -161,5 +151,5 @@ In the `forRoot` method when importing the grid module in the app module you can
 * `gap` - Sets the spacing between all columns and rows. (default is `1rem`)
 * `columnGap` - Sets the spacing between all columns. (default is the value of the `gap` option)
 * `rowGap` - Sets the spacing between all rows. (default is the value of the `gap` option)
-* `autoRows` - Whether to use the grid-auto-rows feature. (default is `true`)
+* `autoRows` - Whether to use the grid-auto-rows feature. (default is `false`)
 * `breakpoints` - Key-Value object with name of breakpoint as key and minWidth as number

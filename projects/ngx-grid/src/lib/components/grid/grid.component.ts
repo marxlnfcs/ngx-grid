@@ -1,28 +1,27 @@
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
-  Component, ContentChildren,
+  Component,
+  ContentChildren,
   ElementRef,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
-  Optional, QueryList,
+  QueryList,
   SimpleChanges
 } from "@angular/core";
-import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../../grid.constants";
 import {
   NgxGridBreakpointName,
-  NgxGridColumnSizeEven, NgxGridGapSize,
+  NgxGridColumnSizeEven,
+  NgxGridGapSize,
   NgxGridOptions,
-  NgxGridStrategy,
-  NgxGridStyle
+  NgxGridStrategy
 } from "../../interfaces/grid.interface";
-import {debounceTime, Subscription} from "rxjs";
-import {createEvent} from "../../utils/event.utils";
+import {debounceTime, Subject, takeUntil} from "rxjs";
 import {NgxGridRef} from "../../services/grid-ref.service";
 import {NgxGridGroup} from "../../interfaces/grid-item.interface";
 import {NgxGridItemDirective, NgxGridItemType} from "./grid.directive";
+import {NgxGridService} from "../../services/grid.service";
 
 @Component({
   selector: 'ngx-grid',
@@ -35,7 +34,7 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
   readonly type = 'group';
   @ContentChildren(NgxGridItemDirective) private itemsRef!: QueryList<NgxGridItemType>;
 
-  subscriptions: Subscription[] = [];
+  destroy$: Subject<void> = new Subject<void>();
 
   @Input() baseBreakpoint?: NgxGridBreakpointName|null;
   @Input() baseSize?: NgxGridColumnSizeEven|null;
@@ -47,9 +46,11 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
   @Input() rows?: string[]|null;
   @Input() autoRows?: boolean|null;
 
+  @Input() options?: Partial<NgxGridOptions>|null;
+
   constructor(
-    @Optional() @Inject(GRID_OPTIONS) private gridOptions: NgxGridOptions,
     public readonly elementRef: ElementRef<HTMLElement>,
+    private gridService: NgxGridService,
     private gridRef: NgxGridRef,
   ){}
 
@@ -58,38 +59,37 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
   }
 
   ngAfterContentInit(){
-    this.subscriptions.push(createEvent(window, 'resize', this.constructor.name).subscribe(() => this.gridRef.emitChange()));
-    this.subscriptions.push(this.itemsRef.changes.subscribe(() => this.gridRef.emitChange()));
-    this.subscriptions.push(this.gridRef.getChanges().subscribe(() => this.build()));
-    this.gridRef.emitChange();
-    this.gridRef.markForCheck();
+    this.gridService.onWindowResize().pipe(takeUntil(this.destroy$)).subscribe(() => this.gridRef.emitChange());
+    this.itemsRef.changes.pipe(takeUntil(this.destroy$)).subscribe(() => this.gridRef.emitChange());
+    this.gridRef.changes.pipe(takeUntil(this.destroy$), debounceTime(0)).subscribe(() => this.build());
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.gridRef.emitChange();
   }
 
-  get options(): NgxGridOptions {
-    return {
-      strategy: this.strategy ?? this.gridOptions?.strategy,
-      baseBreakpoint: this.baseBreakpoint ?? this.gridOptions?.baseBreakpoint,
-      baseSize: this.baseSize ?? this.gridOptions?.baseSize,
-      gap: this.gap ?? this.gridOptions?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
-      columnGap: this.columnGap ?? this.gridOptions?.columnGap ?? this.gap ?? this.gridOptions?.gap,
-      rowGap: this.rowGap ?? this.gridOptions?.rowGap ?? this.gap ?? this.gridOptions?.gap,
-      autoRows: this.autoRows ?? this.gridOptions?.autoRows,
-      breakpoints: this.gridOptions?.breakpoints
-    };
+  get _options(): NgxGridOptions {
+    return this.gridService.getOptions({
+      ...(this.options || {}),
+      strategy: this.strategy as any ?? this.options?.strategy,
+      baseBreakpoint: this.baseBreakpoint as any ?? this.options?.baseBreakpoint,
+      baseSize: this.baseSize as any ?? this.options?.baseSize,
+      gap: this.gap as any ?? this.options?.gap,
+      columnGap: this.columnGap as any ?? this.options?.columnGap,
+      rowGap: this.rowGap as any ?? this.options?.rowGap,
+      autoRows: this.autoRows as any ?? this.options?.autoRows,
+    });
   }
 
   ngOnDestroy() {
     this.gridRef.ngOnDestroy();
-    this.subscriptions.map(s => s.unsubscribe());
-    this.subscriptions = [];
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   build(){
-    this.gridRef.setGlobalOptions(this.options);
+    this.gridRef.setGlobalOptions(this._options);
     this.gridRef.createComponent(this);
+    this.gridRef.markForCheck();
   }
 }

@@ -40,6 +40,18 @@ export interface NgxGridItemTemplate {
   _4xl?: NgxGridColumnSize|null;
   _4xlOffset?: NgxGridColumnSize|null;
   _4xlOrder?: number|null;
+
+  _mobile?: NgxGridColumnSize|null;
+  _mobileOffset?: NgxGridColumnSize|null;
+  _mobileOrder?: number|null;
+
+  _tablet?: NgxGridColumnSize|null;
+  _tabletOffset?: NgxGridColumnSize|null;
+  _tabletOrder?: number|null;
+
+  _desktop?: NgxGridColumnSize|null;
+  _desktopOffset?: NgxGridColumnSize|null;
+  _desktopOrder?: number|null;
 }
 
 export interface NgxGridGroup extends NgxGridItemTemplate {
