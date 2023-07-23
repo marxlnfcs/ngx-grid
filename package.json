@@ -1,7 +1,7 @@
 {
   "name": "@marxlnfcs/ngx-grid",
   "description": "Angular library to create a simple grid layout",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "license": "MIT",
   "author": "marxlnfcs",
   "homepage": "https://github.com/marxlnfcs/ngx-grid#readme",
@@ -17,7 +17,7 @@
     "grid"
   ],
   "scripts": {
-    "start": "ng serve ngx-grid-view",
+    "start": "ng serve ngx-grid-view --port 4201",
     "build": "ng build ngx-grid",
     "npm-publish": "npm run build && cd dist/ngx-grid && npm publish --access public"
   },

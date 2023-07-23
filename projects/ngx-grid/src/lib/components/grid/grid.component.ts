@@ -59,6 +59,7 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
 
   ngAfterContentInit(){
     this.subscriptions.push(createEvent(window, 'resize', this.constructor.name).subscribe(() => this.gridRef.emitChange()));
+    this.subscriptions.push(this.itemsRef.changes.subscribe(() => this.gridRef.emitChange()));
     this.subscriptions.push(this.gridRef.getChanges().subscribe(() => this.build()));
     this.gridRef.emitChange();
     this.gridRef.markForCheck();
