@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Injectable, OnDestroy, Renderer2} from "@angular/core";
-import {Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {
   NgxGridBreakpoint,
   NgxGridBreakpointName,
@@ -7,19 +7,20 @@ import {
   NgxGridOptions,
   NgxGridStyle
 } from "../interfaces/grid.interface";
-import {GRID_OPTIONS_DEFAULTS} from "../grid.constants";
 import {NgxGridComponent} from "../components/grid/grid.component";
 import {NgxGridGroup, NgxGridItem} from "../interfaces/grid-item.interface";
 import {sizeToPixel} from "../utils/common.utils";
+import {NgxGridService} from "./grid.service";
 
 @Injectable()
 export class NgxGridRef implements OnDestroy {
-  private _changes$ = new Subject<void>();
+  private _changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
   private _options?: Partial<NgxGridOptions>;
 
   constructor(
     private renderer2: Renderer2,
     private changeDetectorRef: ChangeDetectorRef,
+    private gridService: NgxGridService,
   ){}
 
   /**
@@ -32,25 +33,7 @@ export class NgxGridRef implements OnDestroy {
   }
 
   getGlobalOptions(): NgxGridOptions {
-    return {
-      strategy: this._options?.strategy ?? GRID_OPTIONS_DEFAULTS.strategy,
-      baseBreakpoint: this._options?.baseBreakpoint ?? GRID_OPTIONS_DEFAULTS.baseBreakpoint,
-      baseSize: this._options?.baseSize ?? GRID_OPTIONS_DEFAULTS.baseSize,
-      gap: this._options?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
-      columnGap: this._options?.columnGap ?? this._options?.gap ?? GRID_OPTIONS_DEFAULTS.columnGap ?? GRID_OPTIONS_DEFAULTS.gap,
-      rowGap: this._options?.rowGap ?? this._options?.gap ?? GRID_OPTIONS_DEFAULTS.rowGap ?? GRID_OPTIONS_DEFAULTS.gap,
-      autoRows: this._options?.autoRows ?? GRID_OPTIONS_DEFAULTS.autoRows,
-      breakpoints: {
-        xs: this._options?.breakpoints?.xs ?? GRID_OPTIONS_DEFAULTS.breakpoints.xs,
-        sm: this._options?.breakpoints?.sm ?? GRID_OPTIONS_DEFAULTS.breakpoints.sm,
-        md: this._options?.breakpoints?.md ?? GRID_OPTIONS_DEFAULTS.breakpoints.md,
-        lg: this._options?.breakpoints?.lg ?? GRID_OPTIONS_DEFAULTS.breakpoints.lg,
-        xl: this._options?.breakpoints?.xl ?? GRID_OPTIONS_DEFAULTS.breakpoints.xl,
-        '2xl': this._options?.breakpoints?.['2xl'] ?? GRID_OPTIONS_DEFAULTS.breakpoints['2xl'],
-        '3xl': this._options?.breakpoints?.['3xl'] ?? GRID_OPTIONS_DEFAULTS.breakpoints['3xl'],
-        '4xl': this._options?.breakpoints?.['4xl'] ?? GRID_OPTIONS_DEFAULTS.breakpoints['4xl'],
-      }
-    }
+    return this.gridService.getOptions(this._options);
   }
 
   /**
@@ -238,6 +221,9 @@ export class NgxGridRef implements OnDestroy {
       this.createBreakpoint(item, '2xl', item._2xl, item._2xlOffset, item._2xlOrder),
       this.createBreakpoint(item, '3xl', item._3xl, item._3xlOffset, item._3xlOrder),
       this.createBreakpoint(item, '4xl', item._4xl, item._4xlOffset, item._4xlOrder),
+      this.createBreakpoint(item, 'mobile', item._mobile, item._mobileOffset, item._mobileOrder),
+      this.createBreakpoint(item, 'tablet', item._tablet, item._tabletOffset, item._tabletOrder),
+      this.createBreakpoint(item, 'desktop', item._desktop, item._desktopOffset, item._desktopOrder),
     ];
   }
 
@@ -250,6 +236,7 @@ export class NgxGridRef implements OnDestroy {
     }
     switch(name){
       case 'xs': breakpoint.size = breakpoint.size || this.getGlobalOptions().baseSize; break;
+      case 'mobile': breakpoint.size = breakpoint.size || this.getGlobalOptions().baseSize; break;
     }
     breakpoint.width = this.getGlobalOptions().breakpoints[name];
     breakpoint.order = breakpoint.order ?? 999;
@@ -265,7 +252,7 @@ export class NgxGridRef implements OnDestroy {
    * Changes
    * # # # # # # # # # # # # # # # # # #
    */
-  getChanges(): Observable<void> {
+  get changes(): Observable<void> {
     return this._changes$ as Observable<void>;
   }
   emitChange(): void {

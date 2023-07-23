@@ -1,37 +1,28 @@
-import {
-  AfterViewInit,
-  Directive,
-  Inject,
-  Input,
-  OnDestroy,
-  Optional,
-  TemplateRef,
-  ViewContainerRef
-} from "@angular/core";
-import {NgxGridBreakpointName, NgxGridBreakpoints, NgxGridOptions} from "../interfaces/grid.interface";
-import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../grid.constants";
-import {sizeToPixel} from "../utils/common.utils";
-import {BehaviorSubject, debounceTime, Subscription} from "rxjs";
-import {createEvent} from "../utils/event.utils";
+import {AfterViewInit, Directive, Input, OnDestroy, TemplateRef, ViewContainerRef} from "@angular/core";
+import {NgxGridBreakpointName} from "../interfaces/grid.interface";
+import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
+import {NgxGridService} from "../services/grid.service";
 
 @Directive({
-  selector: '[ngxScreenSize]',
+  selector: '[ngxScreenSize], [ngxScreenSizeMin], [ngxScreenSizeMax]',
 })
 export class NgxGridScreenSizeDirective implements AfterViewInit, OnDestroy {
   @Input() ngxScreenSize?: NgxGridBreakpointName|null;
+  @Input() ngxScreenSizeMin?: NgxGridBreakpointName|null;
+  @Input() ngxScreenSizeMax?: NgxGridBreakpointName|null;
 
-  changes$: BehaviorSubject<null> = new BehaviorSubject<null>(null);
-  subscriptions: Subscription[] = [];
+  changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
+  destroy$: Subject<void> = new Subject();
 
   constructor(
-    @Optional() @Inject(GRID_OPTIONS) private gridOptions: NgxGridOptions,
     private viewContainerRef: ViewContainerRef,
     private templateRef: TemplateRef<any>,
+    private gridService: NgxGridService,
   ){}
 
   ngAfterViewInit(){
-    this.subscriptions.push(createEvent(window, 'resize', this.constructor.name).subscribe(() => this.changes$.next(null)));
-    this.subscriptions.push(this.changes$.pipe(debounceTime(0)).subscribe(() => this.build()));
+    this.gridService.onWindowResize().pipe(takeUntil(this.destroy$)).subscribe(() => this.changes$.next());
+    this.changes$.pipe(takeUntil(this.destroy$), debounceTime(0)).subscribe(() => this.build());
   }
 
   private build(){
@@ -39,36 +30,30 @@ export class NgxGridScreenSizeDirective implements AfterViewInit, OnDestroy {
     // clear view
     this.viewContainerRef.clear();
 
-    // get nearest breakpoint
-    const breakpoint = this.getBreakpoints()[this.ngxScreenSize || this.gridOptions?.baseBreakpoint || GRID_OPTIONS_DEFAULTS.baseBreakpoint];
+    // get breakpoint
+    const breakpoint = this.screenSizeMin || this.screenSizeMax || this.gridService.getOptions().baseBreakpoint;
 
-    // get sizes
-    const [ containerWidth, breakpointWidth ] = [ window.innerWidth, sizeToPixel(breakpoint) ];
-
-    // clear view if breakpointWidth > containerWidth
-    if(breakpointWidth < containerWidth){
+    // create view if condition is true
+    if(this.screenSizeMin && this.gridService.isBreakpointMin(breakpoint)){
+      this.viewContainerRef.createEmbeddedView(this.templateRef);
+    }else if(this.screenSizeMax && this.gridService.isBreakpointMax(breakpoint)){
       this.viewContainerRef.createEmbeddedView(this.templateRef);
     }
 
   }
 
-  private getBreakpoints(): NgxGridBreakpoints {
-    return {
-      xs: this.gridOptions?.breakpoints?.xs ?? GRID_OPTIONS_DEFAULTS.breakpoints.xs,
-      sm: this.gridOptions?.breakpoints?.sm ?? GRID_OPTIONS_DEFAULTS.breakpoints.sm,
-      md: this.gridOptions?.breakpoints?.md ?? GRID_OPTIONS_DEFAULTS.breakpoints.md,
-      lg: this.gridOptions?.breakpoints?.lg ?? GRID_OPTIONS_DEFAULTS.breakpoints.lg,
-      xl: this.gridOptions?.breakpoints?.xl ?? GRID_OPTIONS_DEFAULTS.breakpoints.xl,
-      '2xl': this.gridOptions?.breakpoints?.['2xl'] ?? GRID_OPTIONS_DEFAULTS.breakpoints['2xl'],
-      '3xl': this.gridOptions?.breakpoints?.['3xl'] ?? GRID_OPTIONS_DEFAULTS.breakpoints['3xl'],
-      '4xl': this.gridOptions?.breakpoints?.['4xl'] ?? GRID_OPTIONS_DEFAULTS.breakpoints['4xl'],
-    }
+  private get screenSizeMin(): NgxGridBreakpointName|null {
+    return this.ngxScreenSizeMin || null;
+  }
+
+  private get screenSizeMax(): NgxGridBreakpointName|null {
+    return this.ngxScreenSizeMin || this.ngxScreenSizeMax || null;
   }
 
   ngOnDestroy() {
     this.changes$.complete();
-    this.subscriptions.map(s => s.unsubscribe());
-    this.subscriptions = [];
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }
