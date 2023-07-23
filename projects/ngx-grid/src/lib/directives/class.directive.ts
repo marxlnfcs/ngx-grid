@@ -4,7 +4,7 @@ import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 import {NgxGridService} from "../services/grid.service";
 
 @Directive({
-  selector: '[xs.class], [sm.class], [md.class], [lg.class], [xl.class], [2xl.class], [3xl.class], [4xl.class]',
+  selector: '[xs.class], [sm.class], [md.class], [lg.class], [xl.class], [2xl.class], [3xl.class], [4xl.class], [mobile.class], [tablet.class], [desktop.class]',
 })
 export class NgxGridClassDirective implements AfterViewInit, OnDestroy {
   @Input('xs.class') _xsClass?: string|NgxGridClass|string[]|null;
