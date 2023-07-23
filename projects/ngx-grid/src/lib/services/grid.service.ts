@@ -47,12 +47,12 @@ export class NgxGridService {
   isBreakpointMin(breakpoint: NgxGridBreakpointName, container?: Window|HTMLElement|null): boolean {
     const containerWidth: number = (container as any)?.['innerWidth'] ?? (container as any)?.['offsetWidth'] ?? window.innerWidth;
     const breakpointWidth: number = sizeToPixel(this.getOptions().breakpoints[breakpoint]);
-    return breakpointWidth >= containerWidth;
+    return containerWidth >= breakpointWidth;
   }
 
   isBreakpointMax(breakpoint: NgxGridBreakpointName, container?: Window|HTMLElement|null): boolean {
     const containerWidth: number = (container as any)?.['innerWidth'] ?? (container as any)?.['offsetWidth'] ?? window.innerWidth;
     const breakpointWidth: number = sizeToPixel(this.getOptions().breakpoints[breakpoint]);
-    return breakpointWidth <= containerWidth;
+    return containerWidth <= breakpointWidth;
   }
 }
