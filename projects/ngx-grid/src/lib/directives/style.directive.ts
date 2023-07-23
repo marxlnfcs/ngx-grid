@@ -4,7 +4,7 @@ import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 import {NgxGridService} from "../services/grid.service";
 
 @Directive({
-  selector: '[xs.style], [sm.style], [md.style], [lg.style], [xl.style], [2xl.style], [3xl.style], [4xl.style]',
+  selector: '[xs.style], [sm.style], [md.style], [lg.style], [xl.style], [2xl.style], [3xl.style], [4xl.style], [mobile.style], [tablet.style], [desktop.style]',
 })
 export class NgxGridStyleDirective implements AfterViewInit, OnDestroy {
   @Input('xs.style') _xsStyle?: string|NgxGridStyle|string[]|null;
@@ -15,9 +15,9 @@ export class NgxGridStyleDirective implements AfterViewInit, OnDestroy {
   @Input('2xl.style') _2xlStyle?: string|NgxGridStyle|string[]|null;
   @Input('3xl.style') _3xlStyle?: string|NgxGridStyle|string[]|null;
   @Input('4xl.style') _4xlStyle?: string|NgxGridStyle|string[]|null;
-  @Input('mobile.class') _mobileClass?: string|NgxGridClass|string[]|null;
-  @Input('tablet.class') _tabletClass?: string|NgxGridClass|string[]|null;
-  @Input('desktop.class') _desktopClass?: string|NgxGridClass|string[]|null;
+  @Input('mobile.style') _mobileClass?: string|NgxGridClass|string[]|null;
+  @Input('tablet.style') _tabletClass?: string|NgxGridClass|string[]|null;
+  @Input('desktop.style') _desktopClass?: string|NgxGridClass|string[]|null;
 
   changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
   destroy$: Subject<void> = new Subject<void>();
