@@ -236,7 +236,6 @@ export class NgxGridRef implements OnDestroy {
     }
     switch(name){
       case 'xs': breakpoint.size = breakpoint.size || this.getGlobalOptions().baseSize; break;
-      case 'mobile': breakpoint.size = breakpoint.size || this.getGlobalOptions().baseSize; break;
     }
     breakpoint.width = this.getGlobalOptions().breakpoints[name];
     breakpoint.order = breakpoint.order ?? 999;
