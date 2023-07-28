@@ -39,7 +39,6 @@ export function buildClassBreakpoint(requester: ClassBreakpointRequester, mode: 
           break;
         }
       }
-      requester.renderer2.addClass(requester.elementRef.nativeElement, key);
     }
   })
 
