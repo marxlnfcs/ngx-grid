@@ -64,7 +64,7 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
     this.gridRef.changes.pipe(takeUntil(this.destroy$), debounceTime(0)).subscribe(() => this.build());
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     this.gridRef.emitChange();
   }
 
