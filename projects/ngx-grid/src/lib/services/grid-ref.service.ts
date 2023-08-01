@@ -97,7 +97,7 @@ export class NgxGridRef implements OnDestroy {
       styles['display'] = 'grid';
       styles['align-items'] = 'start';
       styles['width'] = '100%';
-      styles['height'] = '100%';
+      //styles['height'] = '100%';
       styles['max-height'] = '100%';
       styles['grid-template-columns'] = `repeat(${this.getGlobalOptions().baseSize}, 1fr)`;
       styles['grid-template-rows'] = item?.type === 'group' ? item?.rows?.join(' ') : null;
