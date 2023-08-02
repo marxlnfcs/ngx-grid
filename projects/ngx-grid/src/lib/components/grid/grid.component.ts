@@ -38,7 +38,7 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
   @ContentChildren(NgxGridItemDirective) private itemsRef!: QueryList<NgxGridItemType>;
 
   destroy$: Subject<void> = new Subject<void>();
-  built$: boolean = true;
+  built$: boolean = false;
 
   @Input() baseBreakpoint?: NgxGridBreakpointName|null;
   @Input() baseSize?: NgxGridColumnSizeEven|null;
