@@ -7,8 +7,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  QueryList,
-  SimpleChanges
+  QueryList
 } from "@angular/core";
 import {
   NgxGridAutoRows,
@@ -30,12 +29,16 @@ import {NgxGridService} from "../../services/grid.service";
   styleUrls: ['./grid.component.scss'],
   providers: [NgxGridRef],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.ngx-grid-built]': 'built$',
+  }
 })
 export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChanges, OnDestroy {
   readonly type = 'group';
   @ContentChildren(NgxGridItemDirective) private itemsRef!: QueryList<NgxGridItemType>;
 
   destroy$: Subject<void> = new Subject<void>();
+  built$: boolean = true;
 
   @Input() baseBreakpoint?: NgxGridBreakpointName|null;
   @Input() baseSize?: NgxGridColumnSizeEven|null;
@@ -92,5 +95,6 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
     this.gridRef.setGlobalOptions(this._options);
     this.gridRef.createComponent(this);
     this.gridRef.markForCheck();
+    this.built$ = true;
   }
 }

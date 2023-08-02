@@ -1,0 +1,5 @@
+:host {
+  &:not(.ngx-grid-built) {
+    display: none !important;
+  }
+}
