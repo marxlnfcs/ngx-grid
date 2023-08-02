@@ -1,4 +1,4 @@
-import {NgxGridColumnSize, NgxGridGapSize} from "./grid.interface";
+import {NgxGridAutoRows, NgxGridColumnSize, NgxGridGapSize} from "./grid.interface";
 import {ElementRef} from "@angular/core";
 import {NgxGridItemType} from "../components/grid/grid.directive";
 
@@ -61,7 +61,7 @@ export interface NgxGridGroup extends NgxGridItemTemplate {
   columnGap?: NgxGridGapSize;
   rowGap?: NgxGridGapSize;
   rows?: string[]|null;
-  autoRows?: boolean|null;
+  autoRows?: NgxGridAutoRows|null;
   items: NgxGridItemType[];
 }
 

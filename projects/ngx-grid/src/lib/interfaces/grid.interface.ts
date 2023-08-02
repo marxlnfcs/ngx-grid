@@ -2,6 +2,7 @@ export type NgxGridStrategy = 'screen'|'container';
 export type NgxGridColumnSize = 1|2|3|4|5|6|7|8|9|10|11|12;
 export type NgxGridColumnSizeEven = 2|4|6|8|10|12;
 export type NgxGridBreakpointName = keyof NgxGridBreakpoints;
+export type NgxGridAutoRows = 'min-content'|'max-content'|'auto'|string|number;
 export type NgxGridBreakpointSize = number|`${number}px`|`${number}rem`|`${number}em`;
 export type NgxGridGapSize = NgxGridBreakpointSize|false|null;
 export type NgxGridClass = { [variable: string]: boolean|null|undefined; };
@@ -79,11 +80,11 @@ export interface NgxGridOptions {
   rowGap?: string|number|false;
 
   /**
-   * Enables the grid-alt-auto-rows feature
-   * @example false
-   * @default true
+   * Sets the autoRows of the component
+   * @example 50px
+   * @default min-content
    */
-  autoRows: boolean;
+  autoRows: NgxGridAutoRows;
 
   /**
    * Breakpoints

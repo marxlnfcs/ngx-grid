@@ -8,7 +8,7 @@ import {
   OnDestroy,
   QueryList
 } from "@angular/core";
-import {NgxGridColumnSize, NgxGridGapSize, NgxGridStrategy} from "../../interfaces/grid.interface";
+import {NgxGridAutoRows, NgxGridColumnSize, NgxGridGapSize, NgxGridStrategy} from "../../interfaces/grid.interface";
 import {NgxGridColumn, NgxGridGroup, NgxGridItemTemplate} from "../../interfaces/grid-item.interface";
 import {Subject, takeUntil} from "rxjs";
 import {NgxGridRef} from "../../services/grid-ref.service";
@@ -110,7 +110,7 @@ export class NgxGridGroupDirective extends NgxGridItemDirective implements NgxGr
   @Input() columnGap?: NgxGridGapSize;
   @Input() rowGap?: NgxGridGapSize;
   @Input() rows?: string[]|null;
-  @Input() autoRows?: boolean|null;
+  @Input() autoRows?: NgxGridAutoRows|null;
 
   get items(): NgxGridItemType[] {
     return this.itemsRef.toArray()

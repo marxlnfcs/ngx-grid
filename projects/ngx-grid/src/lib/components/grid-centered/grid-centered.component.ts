@@ -1,13 +1,10 @@
+import {AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges} from '@angular/core';
 import {
-  AfterContentInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges
-} from '@angular/core';
-import {NgxGridBreakpointName, NgxGridColumnSizeEven, NgxGridOptions} from "../../interfaces/grid.interface";
+  NgxGridAutoRows,
+  NgxGridBreakpointName,
+  NgxGridColumnSizeEven,
+  NgxGridOptions
+} from "../../interfaces/grid.interface";
 import {NgxGridService} from "../../services/grid.service";
 import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 
@@ -23,7 +20,7 @@ export class NgxGridCenteredComponent implements AfterContentInit, OnChanges {
 
   @Input() baseBreakpoint?: NgxGridBreakpointName|null;
   @Input() baseSize?: NgxGridColumnSizeEven|null;
-  @Input() autoRows?: boolean|null;
+  @Input() autoRows?: NgxGridAutoRows|null;
 
   @Input() options?: Partial<NgxGridOptions>|null;
 
@@ -62,7 +59,7 @@ export class NgxGridCenteredComponent implements AfterContentInit, OnChanges {
     this.changes$.pipe(takeUntil(this.destroy$), debounceTime(0)).subscribe(() => this.build());
   }
 
-  ngOnChanges(changes: SimpleChanges){
+  ngOnChanges(){
     this.changes$.next();
   }
 

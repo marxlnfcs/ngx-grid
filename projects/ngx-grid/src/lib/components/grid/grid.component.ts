@@ -11,6 +11,7 @@ import {
   SimpleChanges
 } from "@angular/core";
 import {
+  NgxGridAutoRows,
   NgxGridBreakpointName,
   NgxGridColumnSizeEven,
   NgxGridGapSize,
@@ -44,7 +45,7 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
   @Input() columnGap?: NgxGridGapSize;
   @Input() rowGap?: NgxGridGapSize;
   @Input() rows?: string[]|null;
-  @Input() autoRows?: boolean|null;
+  @Input() autoRows?: NgxGridAutoRows|null;
 
   @Input() options?: Partial<NgxGridOptions>|null;
 
