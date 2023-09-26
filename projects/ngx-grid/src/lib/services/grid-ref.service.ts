@@ -121,17 +121,12 @@ export class NgxGridRef implements OnDestroy {
     // set gaps for group
     if(item.type === 'group'){
       const gaps = this.createGaps(root, item, breakpoint);
-      // const columnGap = (item.type === 'group' ? item._columnGap ?? item._gap ?? null : null) ?? group?._columnGap ?? group?._gap ?? this.getGlobalOptions().columnGap;
-      // const rowGap = (item.type === 'group' ? item._rowGap ?? item._gap ?? null : null) ?? group?._columnGap ?? group?._gap ?? this.getGlobalOptions().rowGap;
-      //
-      // styles['column-gap'] = typeof columnGap === 'number' ? `${columnGap}px` : columnGap || '0px';
-      // styles['row-gap'] = typeof rowGap === 'number' ? `${rowGap}px` : rowGap || '0px';
 
-      styles['column-gap'] = `var(--grid-column-gap, ${root ? this.getGlobalOptions()?.columnGap ?? this.getGlobalOptions()?.gap : '0px'})`;
-      styles['row-gap'] = `var(--grid-row-gap, ${root ? this.getGlobalOptions()?.rowGap ?? this.getGlobalOptions()?.gap : '0px'})`;
+      styles['column-gap'] = root ? `var(--grid-column-gap, ${this.getGlobalOptions()?.columnGap ?? this.getGlobalOptions()?.gap})` : 'var(--grid-column-gap)';
+      styles['row-gap'] = root ? `var(--grid-row-gap, ${this.getGlobalOptions()?.rowGap ?? this.getGlobalOptions()?.gap})` : 'var(--grid-row-gap)';
 
       if(gaps.columnGap) styles['--grid-column-gap'] = (gaps.columnGap ? gaps.columnGap : (gaps.columnGap as any) === false ? '0px' : null) as any;
-      if(gaps.columnGap) styles['--grid-row-gap'] = (gaps.rowGap ? gaps.rowGap : (gaps.rowGap as any) === false ? '0px' : null) as any;
+      if(gaps.rowGap) styles['--grid-row-gap'] = (gaps.rowGap ? gaps.rowGap : (gaps.rowGap as any) === false ? '0px' : null) as any;
     }
 
     // set base style for column
