@@ -122,11 +122,11 @@ export class NgxGridRef implements OnDestroy {
     if(item.type === 'group'){
       const gaps = this.createGaps(root, item, breakpoint);
 
-      styles['column-gap'] = root ? `var(--grid-column-gap, ${this.getGlobalOptions()?.columnGap ?? this.getGlobalOptions()?.gap})` : 'var(--grid-column-gap)';
-      styles['row-gap'] = root ? `var(--grid-row-gap, ${this.getGlobalOptions()?.rowGap ?? this.getGlobalOptions()?.gap})` : 'var(--grid-row-gap)';
+      styles['column-gap'] = 'var(--grid-column-gap)';
+      styles['row-gap'] = 'var(--grid-row-gap)';
 
-      if(gaps.columnGap) styles['--grid-column-gap'] = (gaps.columnGap ? gaps.columnGap : (gaps.columnGap as any) === false ? '0px' : null) as any;
-      if(gaps.rowGap) styles['--grid-row-gap'] = (gaps.rowGap ? gaps.rowGap : (gaps.rowGap as any) === false ? '0px' : null) as any;
+      if(root || gaps.columnGap) styles['--grid-column-gap'] = (gaps.columnGap ? gaps.columnGap : (gaps.columnGap as any) === false ? '0px' : null) as any;
+      if(root || gaps.rowGap) styles['--grid-row-gap'] = (gaps.rowGap ? gaps.rowGap : (gaps.rowGap as any) === false ? '0px' : null) as any;
     }
 
     // set base style for column
@@ -285,6 +285,15 @@ export class NgxGridRef implements OnDestroy {
       breakpoint.gap = breakpoint.gap ?? item._gap ?? this.getGlobalOptions()?.breakpointGaps[name]?.gap ?? this.getGlobalOptions().gap;
       breakpoint.columnGap = breakpoint.columnGap ?? item._columnGap ?? this.getGlobalOptions()?.breakpointGaps[name]?.columnGap ?? this.getGlobalOptions().columnGap;
       breakpoint.rowGap = breakpoint.rowGap ?? item._rowGap ?? this.getGlobalOptions()?.breakpointGaps[name]?.rowGap ?? this.getGlobalOptions().rowGap;
+    }
+    if(root){
+      switch(name) {
+        case 'xs': {
+          if(isNil(breakpoint.gap) && isNil(breakpoint.columnGap) && isNil(breakpoint.rowGap)){
+            breakpoint.gap = this.getGlobalOptions()?.breakpointGaps[name]?.gap ?? this.getGlobalOptions().gap;
+          }
+        }
+      }
     }
     return { ...breakpoint, name };
   }
