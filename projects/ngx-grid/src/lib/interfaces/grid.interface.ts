@@ -9,11 +9,10 @@ export type NgxGridClass = { [variable: string]: boolean|null|undefined; };
 export type NgxGridStyle = { [variable: string]: string|null|undefined; };
 
 export interface NgxGridBreakpoint {
-  name: NgxGridBreakpointName;
+  name: string;
   width?: NgxGridBreakpointSize|null;
   size?: NgxGridColumnSize|null;
   offset?: NgxGridColumnSize|null;
-  gap?: string|number|false;
   order?: number|null;
 }
 
@@ -33,14 +32,6 @@ export interface NgxGridBreakpoints {
   'tablet': NgxGridBreakpointSize;
   'desktop': NgxGridBreakpointSize;
 }
-
-export interface NgxGridGaps {
-  gap?: NgxGridGapSize|null;
-  columnGap?: NgxGridGapSize|null;
-  rowGap?: NgxGridGapSize|null;
-}
-
-export type NgxGridBreakpointGaps = { [P in keyof NgxGridBreakpoints]?: NgxGridGaps }
 
 export interface NgxGridOptions {
 
@@ -73,11 +64,6 @@ export interface NgxGridOptions {
    * @default 1rem
    */
   gap: NgxGridGapSize;
-
-  /**
-   * Define default gaps for each breakpoint
-   */
-  breakpointGaps: NgxGridBreakpointGaps;
 
   /**
    * Gap between columns

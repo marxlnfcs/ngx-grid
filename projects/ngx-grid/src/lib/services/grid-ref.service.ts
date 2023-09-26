@@ -4,13 +4,12 @@ import {
   NgxGridBreakpoint,
   NgxGridBreakpointName,
   NgxGridColumnSize,
-  NgxGridGaps, NgxGridGapSize,
   NgxGridOptions,
   NgxGridStyle
 } from "../interfaces/grid.interface";
 import {NgxGridComponent} from "../components/grid/grid.component";
 import {NgxGridGroup, NgxGridItem} from "../interfaces/grid-item.interface";
-import {isNil, sizeToPixel} from "../utils/common.utils";
+import {sizeToPixel} from "../utils/common.utils";
 import {NgxGridService} from "./grid.service";
 
 @Injectable()
@@ -43,10 +42,10 @@ export class NgxGridRef implements OnDestroy {
    * # # # # # # # # # # # # # # # # # #
    */
   createComponent(component: NgxGridComponent): void  {
-      this.createColumns(null, [component], true);
+      this.createColumns(null, [component]);
   }
 
-  createColumns(group: NgxGridGroup|null, items: NgxGridItem[], root: boolean): GridItem[] {
+  createColumns(group: NgxGridGroup|null, items: NgxGridItem[]): GridItem[] {
     const columns: GridItem[] = [];
     this.sortItems(items, group).map((i, index) => {
       if(i.breakpoint){
@@ -56,7 +55,7 @@ export class NgxGridRef implements OnDestroy {
 
         // create children
         if(item.type === 'group'){
-          this.createColumns(item, item.items, false);
+          this.createColumns(item, item.items);
         }
 
         // create position
@@ -67,24 +66,16 @@ export class NgxGridRef implements OnDestroy {
           index: index,
           type: item.type,
           item: item,
-          styles: this.createBaseStyles(root, item, position, group, breakpoint?.name),
+          styles: this.createBaseStyles(item, position, group),
           position: position,
         };
 
         // apply styles
         Object.entries(column.styles).map(([key, value]) => {
           if(value !== null && value !== undefined){
-            if(key.startsWith('--')){
-              item.elementRef.nativeElement.style.setProperty(key, value);
-            }else{
-              this.renderer2.setStyle(item.elementRef.nativeElement, key, value)
-            }
+            this.renderer2.setStyle(item.elementRef.nativeElement, key, value);
           }else{
-            if(key.startsWith('--')){
-              item.elementRef.nativeElement.style.removeProperty(key);
-            }else{
-              this.renderer2.removeStyle(item.elementRef.nativeElement, key);
-            }
+            this.renderer2.removeStyle(item.elementRef.nativeElement, key);
           }
         });
 
@@ -96,7 +87,7 @@ export class NgxGridRef implements OnDestroy {
     return columns;
   }
 
-  private createBaseStyles(root: boolean, item: NgxGridItem, position: GridItemPosition, group?: NgxGridGroup|null, breakpoint?: NgxGridBreakpointName|null): NgxGridStyle {
+  private createBaseStyles(item: NgxGridItem, position: GridItemPosition, group?: NgxGridGroup|null): NgxGridStyle {
 
     // create empty style object
     const styles: NgxGridStyle = {};
@@ -120,13 +111,11 @@ export class NgxGridRef implements OnDestroy {
 
     // set gaps for group
     if(item.type === 'group'){
-      const gaps = this.createGaps(root, item, breakpoint);
+      const columnGap = (item.type === 'group' ? item.columnGap ?? item.gap ?? null : null) ?? group?.columnGap ?? group?.gap ?? this.getGlobalOptions().columnGap;
+      const rowGap = (item.type === 'group' ? item.rowGap ?? item.gap ?? null : null) ?? group?.columnGap ?? group?.gap ?? this.getGlobalOptions().rowGap;
 
-      styles['column-gap'] = 'var(--grid-column-gap)';
-      styles['row-gap'] = 'var(--grid-row-gap)';
-
-      if(root || gaps.columnGap) styles['--grid-column-gap'] = (gaps.columnGap ? gaps.columnGap : (gaps.columnGap as any) === false ? '0px' : null) as any;
-      if(root || gaps.rowGap) styles['--grid-row-gap'] = (gaps.rowGap ? gaps.rowGap : (gaps.rowGap as any) === false ? '0px' : null) as any;
+      styles['column-gap'] = typeof columnGap === 'number' ? `${columnGap}px` : columnGap || '0px';
+      styles['row-gap'] = typeof rowGap === 'number' ? `${rowGap}px` : rowGap || '0px';
     }
 
     // set base style for column
@@ -191,16 +180,6 @@ export class NgxGridRef implements OnDestroy {
 
   }
 
-  private createGaps(root: boolean, group: NgxGridGroup, breakpoint?: NgxGridBreakpointName|null): NgxGridGaps {
-    const gaps = this.createBreakpointGaps(root, group);
-    const currentGap = gaps.find(g => g.name === breakpoint);
-    return {
-      gap: currentGap?.gap,
-      columnGap: currentGap?.columnGap ?? currentGap?.gap,
-      rowGap: currentGap?.rowGap ?? currentGap?.gap,
-    }
-  }
-
   /**
    * # # # # # # # # # # # # # # # # # #
    * Helpers
@@ -261,41 +240,6 @@ export class NgxGridRef implements OnDestroy {
     breakpoint.width = this.getGlobalOptions().breakpoints[name];
     breakpoint.order = breakpoint.order ?? 999;
     return breakpoint;
-  }
-
-  private createBreakpointGaps(root: boolean, item: NgxGridGroup): (NgxGridGaps & { name: NgxGridBreakpointName })[] {
-    return [
-      this.createBreakpointGap(root, item, 'xs', item._xsGap, item._xsColumnGap, item._xsRowGap),
-      this.createBreakpointGap(root, item, 'sm', item._smGap, item._smColumnGap, item._smRowGap),
-      this.createBreakpointGap(root, item, 'md', item._mdGap, item._mdColumnGap, item._mdRowGap),
-      this.createBreakpointGap(root, item, 'lg', item._lgGap, item._lgColumnGap, item._lgRowGap),
-      this.createBreakpointGap(root, item, 'xl', item._xlGap, item._xlColumnGap, item._xlRowGap),
-      this.createBreakpointGap(root, item, '2xl', item._2xlGap, item._2xlColumnGap, item._2xlRowGap),
-      this.createBreakpointGap(root, item, '3xl', item._3xlGap, item._3xlColumnGap, item._3xlRowGap),
-      this.createBreakpointGap(root, item, '4xl', item._4xlGap, item._4xlColumnGap, item._4xlRowGap),
-      this.createBreakpointGap(root, item, 'mobile', item._mobileGap, item._mobileColumnGap, item._mobileRowGap),
-      this.createBreakpointGap(root, item, 'tablet', item._tabletGap, item._tabletColumnGap, item._tabletRowGap),
-      this.createBreakpointGap(root, item, 'desktop', item._desktopGap, item._desktopColumnGap, item._desktopRowGap),
-    ];
-  }
-
-  private createBreakpointGap(root: boolean, item: NgxGridGroup, name: NgxGridBreakpointName, gap?: NgxGridGapSize|null, columnGap?: NgxGridGapSize|null, rowGap?: NgxGridGapSize|null): NgxGridGaps & { name: NgxGridBreakpointName } {
-    const breakpoint: NgxGridGaps = { gap: gap, columnGap: columnGap, rowGap: rowGap };
-    if(root && name === this.getGlobalOptions().baseBreakpoint){
-      breakpoint.gap = breakpoint.gap ?? item._gap ?? this.getGlobalOptions()?.breakpointGaps[name]?.gap ?? this.getGlobalOptions().gap;
-      breakpoint.columnGap = breakpoint.columnGap ?? item._columnGap ?? this.getGlobalOptions()?.breakpointGaps[name]?.columnGap ?? this.getGlobalOptions().columnGap;
-      breakpoint.rowGap = breakpoint.rowGap ?? item._rowGap ?? this.getGlobalOptions()?.breakpointGaps[name]?.rowGap ?? this.getGlobalOptions().rowGap;
-    }
-    if(root){
-      switch(name) {
-        case 'xs': {
-          if(isNil(breakpoint.gap) && isNil(breakpoint.columnGap) && isNil(breakpoint.rowGap)){
-            breakpoint.gap = this.getGlobalOptions()?.breakpointGaps[name]?.gap ?? this.getGlobalOptions().gap;
-          }
-        }
-      }
-    }
-    return { ...breakpoint, name };
   }
 
   private getContainerWidth(group?: NgxGridGroup|null): number {

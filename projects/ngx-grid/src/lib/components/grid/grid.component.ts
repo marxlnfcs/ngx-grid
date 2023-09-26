@@ -11,7 +11,7 @@ import {
 } from "@angular/core";
 import {
   NgxGridAutoRows,
-  NgxGridBreakpointName, NgxGridColumnSize,
+  NgxGridBreakpointName,
   NgxGridColumnSizeEven,
   NgxGridGapSize,
   NgxGridOptions,
@@ -44,57 +44,13 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
   @Input() baseSize?: NgxGridColumnSizeEven|null;
   @Input() strategy?: NgxGridStrategy|null;
 
+  @Input() gap?: NgxGridGapSize;
+  @Input() columnGap?: NgxGridGapSize;
+  @Input() rowGap?: NgxGridGapSize;
   @Input() rows?: string[]|null;
   @Input() autoRows?: NgxGridAutoRows|null;
+
   @Input() options?: Partial<NgxGridOptions>|null;
-
-  @Input('gap') _gap?: NgxGridGapSize|null;
-  @Input('columnGap') _columnGap?: NgxGridGapSize|null;
-  @Input('rowGap') _rowGap?: NgxGridGapSize|null;
-
-  @Input('xs:gap') _xsGap?: NgxGridGapSize|null;
-  @Input('xs:columnGap') _xsColumnGap?: NgxGridGapSize|null;
-  @Input('xs:rowGap') _xsRowGap?: NgxGridGapSize|null;
-
-  @Input('sm:gap') _smGap?: NgxGridGapSize|null;
-  @Input('sm:columnGap') _smColumnGap?: NgxGridGapSize|null;
-  @Input('sm:rowGap') _smRowGap?: NgxGridGapSize|null;
-
-  @Input('md:gap') _mdGap?: NgxGridGapSize|null;
-  @Input('md:columnGap') _mdColumnGap?: NgxGridGapSize|null;
-  @Input('md:rowGap') _mdRowGap?: NgxGridGapSize|null;
-
-  @Input('lg:gap') _lgGap?: NgxGridGapSize|null;
-  @Input('lg:columnGap') _lgColumnGap?: NgxGridGapSize|null;
-  @Input('lg:rowGap') _lgRowGap?: NgxGridGapSize|null;
-
-  @Input('xl:gap') _xlGap?: NgxGridGapSize|null;
-  @Input('xl:columnGap') _xlColumnGap?: NgxGridGapSize|null;
-  @Input('xl:rowGap') _xlRowGap?: NgxGridGapSize|null;
-
-  @Input('2xl:gap') _2xlGap?: NgxGridGapSize|null;
-  @Input('2xl:columnGap') _2xlColumnGap?: NgxGridGapSize|null;
-  @Input('2xl:rowGap') _2xlRowGap?: NgxGridGapSize|null;
-
-  @Input('3xl:gap') _3xlGap?: NgxGridGapSize|null;
-  @Input('3xl:columnGap') _3xlColumnGap?: NgxGridGapSize|null;
-  @Input('3xl:rowGap') _3xlRowGap?: NgxGridGapSize|null;
-
-  @Input('4xl:gap') _4xlGap?: NgxGridGapSize|null;
-  @Input('4xl:columnGap') _4xlColumnGap?: NgxGridGapSize|null;
-  @Input('4xl:rowGap') _4xlRowGap?: NgxGridGapSize|null;
-
-  @Input('mobile:gap') _mobileGap?: NgxGridGapSize|null;
-  @Input('mobile:columnGap') _mobileColumnGap?: NgxGridGapSize|null;
-  @Input('mobile:rowGap') _mobileRowGap?: NgxGridGapSize|null;
-
-  @Input('tablet:gap') _tabletGap?: NgxGridGapSize|null;
-  @Input('tablet:columnGap') _tabletColumnGap?: NgxGridGapSize|null;
-  @Input('tablet:rowGap') _tabletRowGap?: NgxGridGapSize|null;
-
-  @Input('desktop:gap') _desktopGap?: NgxGridGapSize|null;
-  @Input('desktop:columnGap') _desktopColumnGap?: NgxGridGapSize|null;
-  @Input('desktop:rowGap') _desktopRowGap?: NgxGridGapSize|null;
 
   constructor(
     public readonly elementRef: ElementRef<HTMLElement>,
@@ -122,10 +78,9 @@ export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChang
       strategy: this.strategy as any ?? this.options?.strategy,
       baseBreakpoint: this.baseBreakpoint as any ?? this.options?.baseBreakpoint,
       baseSize: this.baseSize as any ?? this.options?.baseSize,
-      gap: this._gap as any ?? this.options?.gap,
-      columnGap: this._columnGap as any ?? this.options?.columnGap,
-      rowGap: this._rowGap as any ?? this.options?.rowGap,
-      breakpointGaps: this.options?.breakpointGaps || {},
+      gap: this.gap as any ?? this.options?.gap,
+      columnGap: this.columnGap as any ?? this.options?.columnGap,
+      rowGap: this.rowGap as any ?? this.options?.rowGap,
       autoRows: this.autoRows as any ?? this.options?.autoRows,
     });
   }

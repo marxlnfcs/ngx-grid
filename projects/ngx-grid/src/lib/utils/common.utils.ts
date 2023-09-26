@@ -21,8 +21,3 @@ export function sizeToPixel(size?: NgxGridBreakpointSize|NgxGridGapSize): number
   }
   return 0;
 }
-
-/** @internal */
-export function isNil<T>(data: T): boolean {
-  return data === undefined || data === null;
-}

@@ -57,57 +57,12 @@ export interface NgxGridItemTemplate {
 export interface NgxGridGroup extends NgxGridItemTemplate {
   readonly type: 'group';
 
+  gap?: NgxGridGapSize;
+  columnGap?: NgxGridGapSize;
+  rowGap?: NgxGridGapSize;
   rows?: string[]|null;
   autoRows?: NgxGridAutoRows|null;
   items: NgxGridItemType[];
-
-  _gap?: NgxGridGapSize|null;
-  _columnGap?: NgxGridGapSize|null;
-  _rowGap?: NgxGridGapSize|null;
-
-  _xsGap?: NgxGridGapSize|null;
-  _xsColumnGap?: NgxGridGapSize|null;
-  _xsRowGap?: NgxGridGapSize|null;
-
-  _smGap?: NgxGridGapSize|null;
-  _smColumnGap?: NgxGridGapSize|null;
-  _smRowGap?: NgxGridGapSize|null;
-
-  _mdGap?: NgxGridGapSize|null;
-  _mdColumnGap?: NgxGridGapSize|null;
-  _mdRowGap?: NgxGridGapSize|null;
-
-  _lgGap?: NgxGridGapSize|null;
-  _lgColumnGap?: NgxGridGapSize|null;
-  _lgRowGap?: NgxGridGapSize|null;
-
-  _xlGap?: NgxGridGapSize|null;
-  _xlColumnGap?: NgxGridGapSize|null;
-  _xlRowGap?: NgxGridGapSize|null;
-
-  _2xlGap?: NgxGridGapSize|null;
-  _2xlColumnGap?: NgxGridGapSize|null;
-  _2xlRowGap?: NgxGridGapSize|null;
-
-  _3xlGap?: NgxGridGapSize|null;
-  _3xlColumnGap?: NgxGridGapSize|null;
-  _3xlRowGap?: NgxGridGapSize|null;
-
-  _4xlGap?: NgxGridGapSize|null;
-  _4xlColumnGap?: NgxGridGapSize|null;
-  _4xlRowGap?: NgxGridGapSize|null;
-
-  _mobileGap?: NgxGridGapSize|null;
-  _mobileColumnGap?: NgxGridGapSize|null;
-  _mobileRowGap?: NgxGridGapSize|null;
-
-  _tabletGap?: NgxGridGapSize|null;
-  _tabletColumnGap?: NgxGridGapSize|null;
-  _tabletRowGap?: NgxGridGapSize|null;
-
-  _desktopGap?: NgxGridGapSize|null;
-  _desktopColumnGap?: NgxGridGapSize|null;
-  _desktopRowGap?: NgxGridGapSize|null;
 }
 
 export interface NgxGridColumn extends NgxGridItemTemplate {

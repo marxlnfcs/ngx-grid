@@ -7,7 +7,6 @@ export const GRID_OPTIONS_DEFAULTS: NgxGridOptions = {
   baseSize: 12,
   gap: '1rem',
   autoRows: 'min-content',
-  breakpointGaps: {},
   breakpoints: {
     xs: 0,
     sm: 481,
