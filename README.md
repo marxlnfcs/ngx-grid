@@ -47,11 +47,12 @@ Simple component to build a dynamic and easy to use grid layout
 #
 #### Options for Grid component: `<ngx-grid>`
 * `strategy` - Defines the strategy of the grid component. SCREEN uses the media queries and CONTAINER uses the container queries which is experimental, Possible values: screen, container
-* `baseBreakpoint` - Defines the base breakpoint of this component. (default is `xs`), Possible values: xs, sm, md, lg, xl, 2xl, 3xl, 4xl
+* `baseBreakpoint` - Defines the base breakpoint of this component. (default is `xs`), Possible values: xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 'mobile', 'tablet', 'desktop'
 * `baseSize` - Defines the default column size of the grid. (default is `12`), Possible values: 2, 4, 6, 8, 10, 12
 * `gap` - Sets the spacing between all columns and rows. (default is `1rem`)
 * `columnGap` - Sets the spacing between all columns. (default is the value of the `gap` option)
 * `rowGap` - Sets the spacing between all rows. (default is the value of the `gap` option)
+* `breakpointGaps` - Defines the base gap for every breakpoint, Possible values: xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 'mobile', 'tablet', 'desktop'
 * `autoRows` - Whether to use the grid-auto-rows feature. (default is `false`)
 * `rows` - Accepts a list of strings to define the size of each row statically. (default is `null`)
 
@@ -60,7 +61,7 @@ Simple component to build a dynamic and easy to use grid layout
 For every directive there are multiple `size`, `offset` and `order` options for each breakpoint.
 The `[size]`, `[offset]` and `[order]` input uses the current base breakpoint.
 
-Breakpoints: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` and `4xl`
+Breakpoints: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`, `mobile`, `tablet` and `desktop`
 Sizes: `1-12`
 Offset sizes: `2`, `4`, `6`, `8`, `10`
 
@@ -76,7 +77,7 @@ Offset sizes: `2`, `4`, `6`, `8`, `10`
 For every directive there are multiple `size`, `offset` and `order` options for each breakpoint.
 The `[size]`, `[offset]` and `[order]` input uses the current base breakpoint.
 
-Breakpoints: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` and `4xl`
+Breakpoints: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`, `mobile`, `tablet` and `desktop`
 Sizes: `1-12`
 Offset sizes: `2`, `4`, `6`, `8`, `10`
 
@@ -106,7 +107,7 @@ Simple component to center a specific size of container
 For every breakpoint, there is a native `size` option.
 The `[size]` input uses the current base breakpoint.
 
-Breakpoints: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` and `4xl`
+Breakpoints: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`, `mobile`, `tablet` and `desktop`
 Sizes: `1-12`
 
 * `size` - Sets the width (1-12) of the column. (default is `12`)
@@ -151,5 +152,6 @@ In the `forRoot` method when importing the grid module in the app module you can
 * `gap` - Sets the spacing between all columns and rows. (default is `1rem`)
 * `columnGap` - Sets the spacing between all columns. (default is the value of the `gap` option)
 * `rowGap` - Sets the spacing between all rows. (default is the value of the `gap` option)
+* `breakpointGaps` - Defines the base gap for every breakpoint, Possible values: xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 'mobile', 'tablet', 'desktop'
 * `autoRows` - Whether to use the grid-auto-rows feature. (default is `false`)
 * `breakpoints` - Key-Value object with name of breakpoint as key and minWidth as number

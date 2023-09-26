@@ -106,11 +106,56 @@ export class NgxGridGroupDirective extends NgxGridItemDirective implements NgxGr
   @ContentChildren(NgxGridItemDirective) private itemsRef!: QueryList<NgxGridItemType>;
 
   @Input() strategy?: NgxGridStrategy;
-  @Input() gap?: NgxGridGapSize;
-  @Input() columnGap?: NgxGridGapSize;
-  @Input() rowGap?: NgxGridGapSize;
   @Input() rows?: string[]|null;
   @Input() autoRows?: NgxGridAutoRows|null;
+
+  @Input('gap') _gap?: NgxGridGapSize|null;
+  @Input('columnGap') _columnGap?: NgxGridGapSize|null;
+  @Input('rowGap') _rowGap?: NgxGridGapSize|null;
+
+  @Input('xs:gap') _xsGap?: NgxGridGapSize|null;
+  @Input('xs:columnGap') _xsColumnGap?: NgxGridGapSize|null;
+  @Input('xs:rowGap') _xsRowGap?: NgxGridGapSize|null;
+
+  @Input('sm:gap') _smGap?: NgxGridGapSize|null;
+  @Input('sm:columnGap') _smColumnGap?: NgxGridGapSize|null;
+  @Input('sm:rowGap') _smRowGap?: NgxGridGapSize|null;
+
+  @Input('md:gap') _mdGap?: NgxGridGapSize|null;
+  @Input('md:columnGap') _mdColumnGap?: NgxGridGapSize|null;
+  @Input('md:rowGap') _mdRowGap?: NgxGridGapSize|null;
+
+  @Input('lg:gap') _lgGap?: NgxGridGapSize|null;
+  @Input('lg:columnGap') _lgColumnGap?: NgxGridGapSize|null;
+  @Input('lg:rowGap') _lgRowGap?: NgxGridGapSize|null;
+
+  @Input('xl:gap') _xlGap?: NgxGridGapSize|null;
+  @Input('xl:columnGap') _xlColumnGap?: NgxGridGapSize|null;
+  @Input('xl:rowGap') _xlRowGap?: NgxGridGapSize|null;
+
+  @Input('2xl:gap') _2xlGap?: NgxGridGapSize|null;
+  @Input('2xl:columnGap') _2xlColumnGap?: NgxGridGapSize|null;
+  @Input('2xl:rowGap') _2xlRowGap?: NgxGridGapSize|null;
+
+  @Input('3xl:gap') _3xlGap?: NgxGridGapSize|null;
+  @Input('3xl:columnGap') _3xlColumnGap?: NgxGridGapSize|null;
+  @Input('3xl:rowGap') _3xlRowGap?: NgxGridGapSize|null;
+
+  @Input('4xl:gap') _4xlGap?: NgxGridGapSize|null;
+  @Input('4xl:columnGap') _4xlColumnGap?: NgxGridGapSize|null;
+  @Input('4xl:rowGap') _4xlRowGap?: NgxGridGapSize|null;
+
+  @Input('mobile:gap') _mobileGap?: NgxGridGapSize|null;
+  @Input('mobile:columnGap') _mobileColumnGap?: NgxGridGapSize|null;
+  @Input('mobile:rowGap') _mobileRowGap?: NgxGridGapSize|null;
+
+  @Input('tablet:gap') _tabletGap?: NgxGridGapSize|null;
+  @Input('tablet:columnGap') _tabletColumnGap?: NgxGridGapSize|null;
+  @Input('tablet:rowGap') _tabletRowGap?: NgxGridGapSize|null;
+
+  @Input('desktop:gap') _desktopGap?: NgxGridGapSize|null;
+  @Input('desktop:columnGap') _desktopColumnGap?: NgxGridGapSize|null;
+  @Input('desktop:rowGap') _desktopRowGap?: NgxGridGapSize|null;
 
   get items(): NgxGridItemType[] {
     return this.itemsRef.toArray()

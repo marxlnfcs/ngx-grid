@@ -19,6 +19,7 @@ export class NgxGridService {
       gap: options?.gap ?? this.gridOptions?.gap ?? GRID_OPTIONS_DEFAULTS.gap,
       columnGap: options?.columnGap ?? this.gridOptions?.columnGap ?? this.gridOptions?.gap ?? GRID_OPTIONS_DEFAULTS.columnGap ?? GRID_OPTIONS_DEFAULTS.gap,
       rowGap: options?.rowGap ?? this.gridOptions?.rowGap ?? this.gridOptions?.gap ?? GRID_OPTIONS_DEFAULTS.rowGap ?? GRID_OPTIONS_DEFAULTS.gap,
+      breakpointGaps: options?.breakpointGaps || this.gridOptions?.breakpointGaps || GRID_OPTIONS_DEFAULTS.breakpointGaps,
       autoRows: options?.autoRows ?? this.gridOptions?.autoRows ?? GRID_OPTIONS_DEFAULTS.autoRows,
       breakpoints: {
         xs: options?.breakpoints?.xs ?? this.gridOptions?.breakpoints?.xs ?? GRID_OPTIONS_DEFAULTS.breakpoints.xs,
