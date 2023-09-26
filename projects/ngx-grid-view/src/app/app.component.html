@@ -34,4 +34,16 @@
     </div>
   </ngx-grid-column>
 
+  <!-- screen size -->
+  <ngx-grid-column>
+    <div class="container">
+      <div class="title">*ngxScreenSize</div>
+      <ngx-grid>
+        <ngx-grid-column [size]="12" class="column blue">Is visible on all sizes</ngx-grid-column>
+        <ngx-grid-column *ngxScreenSizeMax="'3xl'" [size]="6" class="column green">Visible only on xs</ngx-grid-column>
+        <ngx-grid-column *ngxScreenSizeMin="'3xl'" [size]="6" class="column green">Visible only on 3xl</ngx-grid-column>
+      </ngx-grid>
+    </div>
+  </ngx-grid-column>
+
 </ngx-grid>

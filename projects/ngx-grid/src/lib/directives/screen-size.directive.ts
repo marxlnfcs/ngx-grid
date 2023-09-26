@@ -30,15 +30,12 @@ export class NgxGridScreenSizeDirective implements AfterViewInit, OnDestroy {
     // clear view
     this.viewContainerRef.clear();
 
-    // get breakpoint
-    const breakpoint = this.screenSizeMin || this.screenSizeMax || this.gridService.getOptions().baseBreakpoint;
-
     // create view if condition is true
-    if(this.screenSize && this.gridService.isBreakpointMin(breakpoint) && this.gridService.isBreakpointMax(breakpoint)){
+    if(this.screenSize && this.gridService.isBreakpointMin(this.screenSize) && this.gridService.isBreakpointMax(this.screenSize)){
       this.viewContainerRef.createEmbeddedView(this.templateRef);
-    }else if(this.screenSizeMin && this.gridService.isBreakpointMin(breakpoint)){
+    }else if(this.screenSizeMin && this.gridService.isBreakpointMin(this.screenSizeMin)){
       this.viewContainerRef.createEmbeddedView(this.templateRef);
-    }else if(this.screenSizeMax && this.gridService.isBreakpointMax(breakpoint)){
+    }else if(this.screenSizeMax && this.gridService.isBreakpointMax(this.screenSizeMax)){
       this.viewContainerRef.createEmbeddedView(this.templateRef);
     }
 
@@ -53,7 +50,7 @@ export class NgxGridScreenSizeDirective implements AfterViewInit, OnDestroy {
   }
 
   private get screenSizeMax(): NgxGridBreakpointName|null {
-    return this.ngxScreenSizeMin || this.ngxScreenSizeMax || null;
+    return this.ngxScreenSizeMax || null;
   }
 
   ngOnDestroy() {
