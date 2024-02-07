@@ -9,7 +9,7 @@ import {
 } from "../interfaces/grid.interface";
 import {NgxGridComponent} from "../components/grid/grid.component";
 import {NgxGridGroup, NgxGridItem} from "../interfaces/grid-item.interface";
-import {sizeToPixel} from "../utils/common.utils";
+import {cssSize, sizeToPixel} from "../utils/common.utils";
 import {NgxGridService} from "./grid.service";
 
 @Injectable()
@@ -106,7 +106,7 @@ export class NgxGridRef implements OnDestroy {
     // set options for group
     if(item.type === 'group'){
       styles['container-type'] = this.getGlobalOptions().strategy === 'container' ? 'inline-size' : null;
-      styles['grid-auto-rows'] = item?.autoRows ?? group?.autoRows ?? this.getGlobalOptions().autoRows ? 'min-content' : null;
+      styles['grid-auto-rows'] = cssSize(item?.autoRows ?? group?.autoRows ?? this.getGlobalOptions().autoRows);
     }
 
     // set gaps for group
@@ -114,6 +114,7 @@ export class NgxGridRef implements OnDestroy {
       const columnGap = (item.type === 'group' ? item.columnGap ?? item.gap ?? null : null) ?? group?.columnGap ?? group?.gap ?? this.getGlobalOptions().columnGap;
       const rowGap = (item.type === 'group' ? item.rowGap ?? item.gap ?? null : null) ?? group?.columnGap ?? group?.gap ?? this.getGlobalOptions().rowGap;
 
+      styles['column-gap'] = typeof columnGap === 'number' ? `${columnGap}px` : columnGap || '0px';
       styles['column-gap'] = typeof columnGap === 'number' ? `${columnGap}px` : columnGap || '0px';
       styles['row-gap'] = typeof rowGap === 'number' ? `${rowGap}px` : rowGap || '0px';
     }

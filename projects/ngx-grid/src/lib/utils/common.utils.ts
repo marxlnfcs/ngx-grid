@@ -21,3 +21,9 @@ export function sizeToPixel(size?: NgxGridBreakpointSize|NgxGridGapSize): number
   }
   return 0;
 }
+
+
+/** @internal */
+export function cssSize(size: string|number|null){
+  return typeof size === 'string' ? size : `${size || 0}px`;
+}
