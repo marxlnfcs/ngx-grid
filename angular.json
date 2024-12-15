@@ -100,10 +100,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ngx-grid-view:build:production"
+              "buildTarget": "ngx-grid-view:build:production"
             },
             "development": {
-              "browserTarget": "ngx-grid-view:build:development"
+              "buildTarget": "ngx-grid-view:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -111,7 +111,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngx-grid-view:build"
+            "buildTarget": "ngx-grid-view:build"
           }
         },
         "test": {
