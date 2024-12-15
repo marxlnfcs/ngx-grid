@@ -85,20 +85,22 @@ export class NgxGridItemDirective implements NgxGridItemTemplate, OnDestroy, OnC
 }
 
 @Directive({
-  selector: 'ngx-grid-column',
-  providers: [
-    { provide: NgxGridItemDirective, useExisting: NgxGridColumnDirective }
-  ],
+    selector: 'ngx-grid-column',
+    providers: [
+        { provide: NgxGridItemDirective, useExisting: NgxGridColumnDirective }
+    ],
+    standalone: false
 })
 export class NgxGridColumnDirective extends NgxGridItemDirective implements NgxGridColumn, OnChanges {
   override readonly type = 'column';
 }
 
 @Directive({
-  selector: 'ngx-grid-group',
-  providers: [
-    { provide: NgxGridItemDirective, useExisting: NgxGridGroupDirective }
-  ],
+    selector: 'ngx-grid-group',
+    providers: [
+        { provide: NgxGridItemDirective, useExisting: NgxGridGroupDirective }
+    ],
+    standalone: false
 })
 export class NgxGridGroupDirective extends NgxGridItemDirective implements NgxGridGroup, AfterContentInit {
   override readonly type = 'group';

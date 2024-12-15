@@ -14,7 +14,8 @@ import {NgxGridService} from "../../services/grid.service";
 import {buildClassBreakpoint} from "./_helpers";
 
 @Directive({
-  selector: '[xs.class], [sm.class], [md.class], [lg.class], [xl.class], [2xl.class], [3xl.class], [4xl.class], [mobile.class], [tablet.class], [desktop.class]',
+    selector: '[xs.class], [sm.class], [md.class], [lg.class], [xl.class], [2xl.class], [3xl.class], [4xl.class], [mobile.class], [tablet.class], [desktop.class]',
+    standalone: false
 })
 export class NgxGridClassDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input('xs.class') _xsClass?: string|NgxGridClass|string[]|null;

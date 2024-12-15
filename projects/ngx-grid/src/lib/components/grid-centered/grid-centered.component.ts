@@ -9,10 +9,11 @@ import {NgxGridService} from "../../services/grid.service";
 import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 
 @Component({
-  selector: 'ngx-grid-centered',
-  templateUrl: './grid-centered.component.html',
-  styleUrls: ['./grid-centered.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'ngx-grid-centered',
+    templateUrl: './grid-centered.component.html',
+    styleUrls: ['./grid-centered.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NgxGridCenteredComponent implements AfterContentInit, OnChanges {
   changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);

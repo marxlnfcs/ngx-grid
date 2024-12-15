@@ -14,7 +14,8 @@ import {NgxGridService} from "../../services/grid.service";
 import {buildStyleBreakpoint} from "./_helpers";
 
 @Directive({
-  selector: '[max.xs.style], [max.sm.style], [max.md.style], [max.lg.style], [max.xl.style], [max.2xl.style], [max.3xl.style], [max.4xl.style], [max.mobile.style], [max.tablet.style], [max.desktop.style]',
+    selector: '[max.xs.style], [max.sm.style], [max.md.style], [max.lg.style], [max.xl.style], [max.2xl.style], [max.3xl.style], [max.4xl.style], [max.mobile.style], [max.tablet.style], [max.desktop.style]',
+    standalone: false
 })
 export class NgxGridMaxStyleDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input('max.xs.style') _xsStyle?: string|NgxGridStyle|string[]|null;
