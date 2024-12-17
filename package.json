@@ -1,7 +1,7 @@
 {
   "name": "@marxlnfcs/ngx-grid",
   "description": "Angular library to create a simple grid layout",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "license": "GPL-3.0",
   "author": "marxlnfcs",
   "homepage": "https://github.com/marxlnfcs/ngx-grid#readme",
@@ -22,14 +22,14 @@
     "npm-publish": "npm run build && cd dist/ngx-grid && npm publish --access public"
   },
   "dependencies": {
-    "@angular/animations": "19.0.4",
-    "@angular/common": "19.0.4",
-    "@angular/compiler": "19.0.4",
-    "@angular/core": "19.0.4",
-    "@angular/forms": "19.0.4",
-    "@angular/platform-browser": "19.0.4",
-    "@angular/platform-browser-dynamic": "19.0.4",
-    "@angular/router": "19.0.4",
+    "@angular/animations": "^19.0.4",
+    "@angular/common": "^19.0.4",
+    "@angular/compiler": "^19.0.4",
+    "@angular/core": "^19.0.4",
+    "@angular/forms": "^19.0.4",
+    "@angular/platform-browser": "^19.0.4",
+    "@angular/platform-browser-dynamic": "^19.0.4",
+    "@angular/router": "^19.0.4",
     "rxjs": "^7.8.1",
     "zone.js": "~0.15.0"
   },
