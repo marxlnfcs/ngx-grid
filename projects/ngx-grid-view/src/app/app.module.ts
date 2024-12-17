@@ -7,7 +7,7 @@ import {NgxGridModule} from "../../../ngx-grid/src/lib/grid.module";
   imports: [
     BrowserModule,
     NgxGridModule.forRoot({
-      baseBreakpoint: '3xl'
+      baseBreakpoint: '3xl',
     }),
   ],
   declarations: [

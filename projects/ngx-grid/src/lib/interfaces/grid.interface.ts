@@ -28,9 +28,9 @@ export interface NgxGridBreakpoints {
   '4xl': NgxGridBreakpointSize;
 
   /** Simple breakpoints */
-  'mobile': NgxGridBreakpointSize;
-  'tablet': NgxGridBreakpointSize;
-  'desktop': NgxGridBreakpointSize;
+  mobile: NgxGridBreakpointSize;
+  tablet: NgxGridBreakpointSize;
+  desktop: NgxGridBreakpointSize;
 }
 
 export interface NgxGridOptions {
