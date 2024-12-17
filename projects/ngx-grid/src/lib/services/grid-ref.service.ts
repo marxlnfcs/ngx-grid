@@ -186,20 +186,7 @@ export class NgxGridRef implements OnDestroy {
    * Helpers
    * # # # # # # # # # # # # # # # # # #
    */
-  private sortItems(items: NgxGridItem[], group?: NgxGridGroup|null): { item: NgxGridItem, breakpoint: NgxGridBreakpoint|null }[] {
-     return items
-       .map(item => ({ item, breakpoint: this.getNearestBreakpoint(item, group) }))
-       .filter(i => !!i.breakpoint)
-       .sort((a, b) => {
-         const aOrder = a.breakpoint?.order as number;
-         const bOrder = b.breakpoint?.order as number;
-         if(aOrder < bOrder) return -1;
-         if(aOrder > bOrder) return 1;
-         return 0;
-       });
-  }
-
-  private getNearestBreakpoint(item: NgxGridItem, group?: NgxGridGroup|null): NgxGridBreakpoint|null {
+  getNearestBreakpoint(item: NgxGridItem, group?: NgxGridGroup|null): NgxGridBreakpoint|null {
     const containerWidth = this.getContainerWidth(group);
     const breakpoints = this.createBreakpoints(item);
     let nearestBreakpoint: NgxGridBreakpoint|null = null;
@@ -212,7 +199,20 @@ export class NgxGridRef implements OnDestroy {
     return nearestBreakpoint;
   }
 
-  private createBreakpoints(item: NgxGridItem): NgxGridBreakpoint[] {
+  sortItems(items: NgxGridItem[], group?: NgxGridGroup|null): { item: NgxGridItem, breakpoint: NgxGridBreakpoint|null }[] {
+     return items
+       .map(item => ({ item, breakpoint: this.getNearestBreakpoint(item, group) }))
+       .filter(i => !!i.breakpoint)
+       .sort((a, b) => {
+         const aOrder = a.breakpoint?.order as number;
+         const bOrder = b.breakpoint?.order as number;
+         if(aOrder < bOrder) return -1;
+         if(aOrder > bOrder) return 1;
+         return 0;
+       });
+  }
+
+  createBreakpoints(item: NgxGridItem): NgxGridBreakpoint[] {
     return [
       this.createBreakpoint(item, 'xs', item._xs, item._xsOffset, item._xsOrder),
       this.createBreakpoint(item, 'sm', item._sm, item._smOffset, item._smOrder),
@@ -228,7 +228,7 @@ export class NgxGridRef implements OnDestroy {
     ];
   }
 
-  private createBreakpoint(item: NgxGridItem, name: NgxGridBreakpointName, size?: NgxGridColumnSize|null, offset?: NgxGridColumnSize|null, order?: number|null): NgxGridBreakpoint {
+  createBreakpoint(item: NgxGridItem, name: NgxGridBreakpointName, size?: NgxGridColumnSize|null, offset?: NgxGridColumnSize|null, order?: number|null): NgxGridBreakpoint {
     const breakpoint: NgxGridBreakpoint = { name, size, offset, order };
     if(name === this.getGlobalOptions().baseBreakpoint){
       breakpoint.size = breakpoint.size ?? item._size ?? this.getGlobalOptions().baseSize;
@@ -243,7 +243,7 @@ export class NgxGridRef implements OnDestroy {
     return breakpoint;
   }
 
-  private getContainerWidth(group?: NgxGridGroup|null): number {
+  getContainerWidth(group?: NgxGridGroup|null): number {
     return this.getGlobalOptions().strategy === 'container' ? group?.elementRef.nativeElement.offsetWidth || window.innerWidth : window.innerWidth;
   }
 
@@ -269,7 +269,9 @@ export class NgxGridRef implements OnDestroy {
   }
 
   ngOnDestroy(): void{
-    this._changes$.complete();
+    if(!this._changes$.closed){
+      this._changes$.complete();
+    }
   }
 }
 
