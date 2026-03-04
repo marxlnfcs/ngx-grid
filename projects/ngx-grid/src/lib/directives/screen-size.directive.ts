@@ -5,7 +5,6 @@ import {NgxGridService} from "../services/grid.service";
 
 @Directive({
     selector: '[ngxScreenSize], [ngxScreenSizeMin], [ngxScreenSizeMax]',
-    standalone: false
 })
 export class NgxGridScreenSizeDirective implements AfterViewInit, OnDestroy {
   @Input() ngxScreenSize?: NgxGridBreakpointName|null;

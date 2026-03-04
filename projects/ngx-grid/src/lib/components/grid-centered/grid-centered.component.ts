@@ -19,18 +19,19 @@ import {NgxGridService} from "../../services/grid.service";
 import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 import {NgxGridColumn} from "../../interfaces/grid-item.interface";
 import {NgxGridRef} from "../../services/grid-ref.service";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'ngx-grid-centered',
   templateUrl: './grid-centered.component.html',
   styleUrls: ['./grid-centered.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [CommonModule],
   providers: [NgxGridRef],
   host: {
-    '[class.nginx-grid-centered]': 'true',
+    '[class.ngx-grid-centered]': 'true',
     '[class.ngx-grid-built]': 'built$',
-  },
+  }
 })
 export class NgxGridCenteredComponent implements AfterContentInit, OnChanges, OnDestroy {
   changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);

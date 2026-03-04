@@ -86,7 +86,6 @@ export class NgxGridItemDirective implements NgxGridItemTemplate, OnDestroy, OnC
 
 @Directive({
   selector: 'ngx-grid-column',
-  standalone: false,
   providers: [
       { provide: NgxGridItemDirective, useExisting: NgxGridColumnDirective }
   ],
@@ -100,7 +99,6 @@ export class NgxGridColumnDirective extends NgxGridItemDirective implements NgxG
 
 @Directive({
   selector: 'ngx-grid-group',
-  standalone: false,
   providers: [
       { provide: NgxGridItemDirective, useExisting: NgxGridGroupDirective }
   ],

@@ -22,18 +22,19 @@ import {NgxGridRef} from "../../services/grid-ref.service";
 import {NgxGridGroup} from "../../interfaces/grid-item.interface";
 import {NgxGridItemDirective, NgxGridItemType} from "./grid.directive";
 import {NgxGridService} from "../../services/grid.service";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'ngx-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
-  providers: [NgxGridRef],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule],
+  providers: [NgxGridRef],
   host: {
     '[class.ngx-grid]': 'true',
     '[class.ngx-grid-built]': 'built$',
-  },
-  standalone: false
+  }
 })
 export class NgxGridComponent implements NgxGridGroup, AfterContentInit, OnChanges, OnDestroy {
   readonly type = 'group';

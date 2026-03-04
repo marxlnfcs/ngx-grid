@@ -14,8 +14,7 @@ import {NgxGridService} from "../../services/grid.service";
 import {buildStyleBreakpoint} from "./_helpers";
 
 @Directive({
-    selector: '[min.xs.style], [min.sm.style], [min.md.style], [min.lg.style], [min.xl.style], [min.2xl.style], [min.3xl.style], [min.4xl.style], [min.mobile.style], [min.tablet.style], [min.desktop.style]',
-    standalone: false
+  selector: '[min.xs.style], [min.sm.style], [min.md.style], [min.lg.style], [min.xl.style], [min.2xl.style], [min.3xl.style], [min.4xl.style], [min.mobile.style], [min.tablet.style], [min.desktop.style]',
 })
 export class NgxGridMinStyleDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input('min.xs.style') _xsStyle?: string|NgxGridStyle|string[]|null;

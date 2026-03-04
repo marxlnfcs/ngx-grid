@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
 import {createEvent} from "../utils/event.utils";
 import {sizeToPixel} from "../utils/common.utils";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class NgxGridService {
   constructor(
     @Optional() @Inject(GRID_OPTIONS) private gridOptions: NgxGridOptions,

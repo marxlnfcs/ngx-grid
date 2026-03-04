@@ -14,8 +14,7 @@ import {NgxGridService} from "../../services/grid.service";
 import {buildClassBreakpoint} from "./_helpers";
 
 @Directive({
-    selector: '[max.xs.class], [max.sm.class], [max.md.class], [max.lg.class], [max.xl.class], [max.2xl.class], [max.3xl.class], [max.4xl.class], [max.mobile.class], [max.tablet.class], [max.desktop.class]',
-    standalone: false
+  selector: '[max.xs.class], [max.sm.class], [max.md.class], [max.lg.class], [max.xl.class], [max.2xl.class], [max.3xl.class], [max.4xl.class], [max.mobile.class], [max.tablet.class], [max.desktop.class]',
 })
 export class NgxGridMaxClassDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input('max.xs.class') _xsClass?: string|NgxGridClass|string[]|null;

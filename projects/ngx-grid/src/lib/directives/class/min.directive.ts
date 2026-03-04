@@ -14,8 +14,7 @@ import {NgxGridService} from "../../services/grid.service";
 import {buildClassBreakpoint} from "./_helpers";
 
 @Directive({
-    selector: '[min.xs.class], [min.sm.class], [min.md.class], [min.lg.class], [min.xl.class], [min.2xl.class], [min.3xl.class], [min.4xl.class], [min.mobile.class], [min.tablet.class], [min.desktop.class]',
-    standalone: false
+  selector: '[min.xs.class], [min.sm.class], [min.md.class], [min.lg.class], [min.xl.class], [min.2xl.class], [min.3xl.class], [min.4xl.class], [min.mobile.class], [min.tablet.class], [min.desktop.class]',
 })
 export class NgxGridMinClassDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input('min.xs.class') _xsClass?: string|NgxGridClass|string[]|null;
