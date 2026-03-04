@@ -1,0 +1,9 @@
+{
+  "directory": "./projects/ngx-grid/src",
+  "delete": true,
+  "noHeader": true,
+  "location": "top",
+  "singleQuotes": true,
+  "mode": "flat",
+  "name": "public-api.ts"
+}

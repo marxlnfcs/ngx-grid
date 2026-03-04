@@ -17,8 +17,9 @@
     "grid"
   ],
   "scripts": {
+    "barrelsby": "barrelsby --config barrelsby.config.json",
     "start": "ng serve ngx-grid-view --port 4201",
-    "build": "ng build ngx-grid",
+    "build": "npm run barrelsby && ng build ngx-grid",
     "npm-publish": "npm run build && cd dist/ngx-grid && npm publish --access public"
   },
   "dependencies": {
@@ -34,6 +35,7 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
+    "barrelsby": "^2.8.1",
     "@angular/build": "^21.2.0",
     "@angular/cli": "~21.2.0",
     "@angular/compiler-cli": "^21.2.0",
