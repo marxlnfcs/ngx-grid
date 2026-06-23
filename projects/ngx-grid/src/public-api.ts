@@ -3,6 +3,7 @@ export * from './lib/grid.interface';
 export * from './lib/grid.module';
 export * from './lib/grid.provider';
 export * from './lib/components/grid/grid.component';
+export * from './lib/components/grid/grid.directive';
 export * from './lib/components/grid/grid.interface';
 export * from './lib/components/grid/columns/base';
 export * from './lib/components/grid/columns/column';
