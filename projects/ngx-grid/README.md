@@ -18,15 +18,20 @@
 ---
 
 #
-### Module:
-Import `GridModule` from `@marxlnfcs/ngx-grid`
-
+### Declaration:
 ```typescript
-import { GridModule } from '@marxlnfcs/ngx-grid';
+import { provideGrid, GridImports } from '@marxlnfcs/ngx-grid';
+
+
 
 @NgModule({
   imports: [
-    GridModule.forRoot({ ... })
+    ...
+    GridImports,
+  ],
+  providers: [
+    ...
+    provideGrid(...),
   ]
 })
 ```
