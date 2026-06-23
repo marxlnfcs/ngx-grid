@@ -1,49 +1,43 @@
-<ngx-grid>
+<div class="page">
 
   <!-- grid -->
-  <ngx-grid-column>
-    <div class="container">
-      <div class="title">Grid</div>
-      <ngx-grid>
-        <ngx-grid-column [size]="12" class="column blue">12 / 12</ngx-grid-column>
-        <ngx-grid-column [size]="4" class="column green">4 / 12</ngx-grid-column>
+  <div class="container">
+    <div class="title">Grid</div>
+    <ngx-grid>
+      <ngx-grid-column [size]="12" class="column blue">12 / 12</ngx-grid-column>
+      <ngx-grid-column [size]="4" class="column green">4 / 12</ngx-grid-column>
+      <ngx-grid-group [size]="8">
         <ngx-grid-group [size]="8">
-          <ngx-grid-group [size]="8">
-            <ngx-grid-column [size]="3" class="column orange">3 / 12</ngx-grid-column>
-            <ngx-grid-column [size]="3" class="column orange">3 / 12</ngx-grid-column>
-            <ngx-grid-column [size]="3" class="column orange">3 / 12</ngx-grid-column>
-            <ngx-grid-column [size]="3" class="column orange">3 / 12</ngx-grid-column>
-            <ngx-grid-column [size]="12" class="column purple">12 / 12</ngx-grid-column>
-          </ngx-grid-group>
-          <ngx-grid-column [size]="4" class="column yellow">4 / 12</ngx-grid-column>
-          <ngx-grid-column class="column yellow">4 / 12</ngx-grid-column>
+          <ngx-grid-column [size]="3" class="column orange">3 / 12</ngx-grid-column>
+          <ngx-grid-column [size]="3" class="column orange">3 / 12</ngx-grid-column>
+          <ngx-grid-column [size]="3" class="column orange">3 / 12</ngx-grid-column>
+          <ngx-grid-column [size]="3" class="column orange">3 / 12</ngx-grid-column>
+          <ngx-grid-column [size]="12" class="column purple">12 / 12</ngx-grid-column>
         </ngx-grid-group>
-      </ngx-grid>
-    </div>
-  </ngx-grid-column>
+        <ngx-grid-column [size]="4" class="column yellow">4 / 12</ngx-grid-column>
+        <ngx-grid-column class="column yellow">4 / 12</ngx-grid-column>
+      </ngx-grid-group>
+    </ngx-grid>
+  </div>
 
   <!-- grid-centered -->
-  <ngx-grid-column>
-    <div class="container">
-      <div class="title">Grid Centered</div>
-      <ngx-grid-centered [size]="6">
-        <div class="column blue">
-          Centered
-        </div>
-      </ngx-grid-centered>
-    </div>
-  </ngx-grid-column>
+  <div class="container">
+    <div class="title">Grid Centered</div>
+    <ngx-grid-centered [size]="6">
+      <div class="column blue">
+        Centered
+      </div>
+    </ngx-grid-centered>
+  </div>
 
   <!-- screen size -->
-  <ngx-grid-column>
-    <div class="container">
-      <div class="title">*ngxScreenSize</div>
-      <ngx-grid>
-        <ngx-grid-column [size]="12" class="column blue">Is visible on all sizes</ngx-grid-column>
-        <ngx-grid-column *ngxScreenSizeMax="'3xl'" [size]="6" class="column green">Visible only on xs</ngx-grid-column>
-        <ngx-grid-column *ngxScreenSizeMin="'3xl'" [size]="6" class="column green">Visible only on 3xl</ngx-grid-column>
-      </ngx-grid>
-    </div>
-  </ngx-grid-column>
+  <div class="container">
+    <div class="title">*ngxScreenSize</div>
+    <ngx-grid>
+      <ngx-grid-column [size]="12" class="column blue">Is visible on all sizes</ngx-grid-column>
+      <ngx-grid-column *ngxScreenSizeMax="'3xl'" [size]="6" class="column green">Visible only on xs</ngx-grid-column>
+      <ngx-grid-column *ngxScreenSizeMin="'3xl'" [size]="6" class="column green">Visible only on 3xl</ngx-grid-column>
+    </ngx-grid>
+  </div>
 
-</ngx-grid>
+</div>

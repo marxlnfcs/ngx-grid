@@ -94,6 +94,12 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "testing": {
+              "aot": false,
+              "optimization": false,
+              "extractLicenses": false,
+              "polyfills": "projects/ngx-grid-view/src/polyfills.ts"
             }
           },
           "defaultConfiguration": "production"
@@ -117,21 +123,21 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "projects/ngx-grid-view/src/test.ts",
-            "polyfills": "projects/ngx-grid-view/src/polyfills.ts",
             "tsConfig": "projects/ngx-grid-view/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-grid-view/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/ngx-grid-view/src/favicon.ico",
-              "projects/ngx-grid-view/src/assets"
+            "reporters": [
+              "default"
             ],
-            "styles": [
-              "projects/ngx-grid-view/src/styles.scss"
+            "coverageReporters": [
+              "html",
+              "text-summary"
             ],
-            "scripts": []
+            "setupFiles": [
+              "projects/ngx-grid-view/src/test.ts"
+            ],
+            "buildTarget": ":build:testing",
+            "runner": "vitest"
           }
         }
       }

@@ -2,7 +2,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
+    "rootDir": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -14,7 +14,7 @@
     "sourceMap": true,
     "paths": {
       "ngx-grid": [
-        "dist/ngx-grid"
+        "./dist/ngx-grid"
       ]
     },
     "declaration": false,

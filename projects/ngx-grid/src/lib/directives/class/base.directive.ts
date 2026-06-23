@@ -1,64 +1,56 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Directive,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  Renderer2
-} from "@angular/core";
-import {NgxGridClass} from "../../interfaces/grid.interface";
-import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
-import {NgxGridService} from "../../services/grid.service";
-import {buildClassBreakpoint} from "./_helpers";
+import {computed, Directive, ElementRef, inject, input, OnChanges, OnDestroy, Renderer2, Signal} from "@angular/core";
+import {IGridBreakpointName, IGridClass} from "../../grid.interface";
+import {BehaviorSubject, debounceTime} from "rxjs";
+import {GridService} from "../../services/grid.service";
+import {buildClassBreakpoint, IGridClassInput, IGridClassInputs} from "./_helpers";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Directive({
   selector: '[xs.class], [sm.class], [md.class], [lg.class], [xl.class], [2xl.class], [3xl.class], [4xl.class], [mobile.class], [tablet.class], [desktop.class]',
+  standalone: true,
 })
-export class NgxGridClassDirective implements AfterViewInit, OnChanges, OnDestroy {
-  @Input('xs.class') _xsClass?: string|NgxGridClass|string[]|null;
-  @Input('sm.class') _smClass?: string|NgxGridClass|string[]|null;
-  @Input('md.class') _mdClass?: string|NgxGridClass|string[]|null;
-  @Input('lg.class') _lgClass?: string|NgxGridClass|string[]|null;
-  @Input('xl.class') _xlClass?: string|NgxGridClass|string[]|null;
-  @Input('2xl.class') _2xlClass?: string|NgxGridClass|string[]|null;
-  @Input('3xl.class') _3xlClass?: string|NgxGridClass|string[]|null;
-  @Input('4xl.class') _4xlClass?: string|NgxGridClass|string[]|null;
-  @Input('mobile.class') _mobileClass?: string|NgxGridClass|string[]|null;
-  @Input('tablet.class') _tabletClass?: string|NgxGridClass|string[]|null;
-  @Input('desktop.class') _desktopClass?: string|NgxGridClass|string[]|null;
+export class GridClass implements OnChanges, OnDestroy {
+  readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef);
+  readonly renderer: Renderer2 = inject(Renderer2);
+  readonly gridService: GridService = inject(GridService);
 
-  changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
-  destroy$: Subject<void> = new Subject<void>();
+  private readonly changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
 
-  classes: { [breakpoint: string]: NgxGridClass } = {};
+  class_xs = input<IGridClassInput>(null, { alias: 'xs.class' });
+  class_sm = input<IGridClassInput>(null, { alias: 'sm.class' });
+  class_md = input<IGridClassInput>(null, { alias: 'md.class' });
+  class_lg = input<IGridClassInput>(null, { alias: 'lg.class' });
+  class_xl = input<IGridClassInput>(null, { alias: 'xl.class' });
+  class_2xl = input<IGridClassInput>(null, { alias: '2xl.class' });
+  class_3xl = input<IGridClassInput>(null, { alias: '3xl.class' });
+  class_4xl = input<IGridClassInput>(null, { alias: '4xl.class' });
+  class_mobile = input<IGridClassInput>(null, { alias: 'mobile.class' });
+  class_tablet = input<IGridClassInput>(null, { alias: 'tablet.class' });
+  class_desktop = input<IGridClassInput>(null, { alias: 'desktop.class' });
 
-  constructor(
-    public elementRef: ElementRef<HTMLElement>,
-    public changeDetectorRef: ChangeDetectorRef,
-    public renderer2: Renderer2,
-    public gridService: NgxGridService,
-  ){}
+  classes: Signal<IGridClassInputs> = computed(() => ({
+    'xs': this.class_xs(),
+    'sm': this.class_sm(),
+    'md': this.class_md(),
+    'lg': this.class_lg(),
+    'xl': this.class_xl(),
+    '2xl': this.class_2xl(),
+    '3xl': this.class_3xl(),
+    '4xl': this.class_4xl(),
+    'mobile': this.class_mobile(),
+    'tablet': this.class_tablet(),
+    'desktop': this.class_desktop(),
+  }));
 
-  ngAfterViewInit(){
-    this.gridService.onWindowResize().pipe(takeUntil(this.destroy$)).subscribe(() => this.changes$.next());
-    this.changes$.pipe(takeUntil(this.destroy$), debounceTime(0)).subscribe(() => this.build());
+  computedClasses: Partial<Record<IGridBreakpointName, IGridClass>> = {};
+
+  constructor(){
+    this.changes$.pipe(takeUntilDestroyed(), debounceTime(0)).subscribe(() => this.build());
+    this.gridService.onWindowResize().pipe(takeUntilDestroyed()).subscribe(() => this.changes$.next());
   }
 
   private build(){
-    buildClassBreakpoint(this, 'min', 'xs', this._xsClass);
-    buildClassBreakpoint(this, 'min', 'sm', this._smClass);
-    buildClassBreakpoint(this, 'min', 'md', this._mdClass);
-    buildClassBreakpoint(this, 'min', 'lg', this._lgClass);
-    buildClassBreakpoint(this, 'min', 'xl', this._xlClass);
-    buildClassBreakpoint(this, 'min', '2xl', this._2xlClass);
-    buildClassBreakpoint(this, 'min', '3xl', this._3xlClass);
-    buildClassBreakpoint(this, 'min', '4xl', this._4xlClass);
-    buildClassBreakpoint(this, 'min', 'mobile', this._mobileClass);
-    buildClassBreakpoint(this, 'min', 'tablet', this._tabletClass);
-    buildClassBreakpoint(this, 'min', 'desktop', this._desktopClass);
-    this.changeDetectorRef.markForCheck();
+    Object.entries(this.classes()).map(([breakpoint, klass]) => buildClassBreakpoint(this, breakpoint as IGridBreakpointName, klass));
   }
 
   ngOnChanges(){
@@ -67,7 +59,5 @@ export class NgxGridClassDirective implements AfterViewInit, OnChanges, OnDestro
 
   ngOnDestroy() {
     this.changes$.complete();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

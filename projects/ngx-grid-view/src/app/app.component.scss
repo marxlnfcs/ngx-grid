@@ -10,6 +10,12 @@
   user-select: none;
 }
 
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .container, .column {
   display: block;
   width: 100%;

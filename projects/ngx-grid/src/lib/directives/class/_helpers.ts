@@ -1,52 +1,53 @@
-import {NgxGridBreakpointName, NgxGridClass} from "../../interfaces/grid.interface";
-import {NgxGridService} from "../../services/grid.service";
-import {ElementRef, Renderer2} from "@angular/core";
+import {IGridBreakpointName, IGridClass} from "../../grid.interface";
+import {GridClass} from "./base.directive";
+import {GridClassMin} from "./min.directive";
+import {GridClassMax} from "./max.directive";
 
-/** @internal */
-export interface ClassBreakpointRequester {
-  renderer2: Renderer2;
-  elementRef: ElementRef<HTMLElement>,
-  gridService: NgxGridService;
-  classes: { [breakpoint: string]: NgxGridClass };
+export type IGridClassInput = string|IGridClass|string[]|null;
+export interface IGridClassInputs {
+  'xs': IGridClassInput;
+  'sm': IGridClassInput;
+  'md': IGridClassInput;
+  'lg': IGridClassInput;
+  'xl': IGridClassInput;
+  '2xl': IGridClassInput;
+  '3xl': IGridClassInput;
+  '4xl': IGridClassInput;
+  'mobile': IGridClassInput;
+  'tablet': IGridClassInput;
+  'desktop': IGridClassInput;
 }
 
 /** @internal */
-export function buildClassBreakpoint(requester: ClassBreakpointRequester, mode: 'min'|'max', breakpoint: NgxGridBreakpointName, klass: any): void {
+export function buildClassBreakpoint(item: GridClass|GridClassMin|GridClassMax, breakpoint: IGridBreakpointName, klass: IGridClassInput): void {
 
   // remove current classes
-  Object.keys(requester.classes[breakpoint] || {}).map(key => {
-    requester.renderer2.removeClass(requester.elementRef.nativeElement, key);
+  Object.keys(item.computedClasses[breakpoint] || {}).map(key => {
+    item.renderer.removeClass(item.elementRef.nativeElement, key);
   });
 
   // parse classes
-  requester.classes[breakpoint] = parseClasses(klass);
+  item.computedClasses[breakpoint] = parseClasses(klass);
 
   // apply classes
-  Object.keys(requester.classes[breakpoint]).map(key => {
-    if(requester.classes[breakpoint][key]){
-      switch(mode) {
-        case 'max': {
-          if(requester.gridService.isBreakpointMax(breakpoint)){
-            requester.renderer2.addClass(requester.elementRef.nativeElement, key);
-          }
-          break;
-        }
-        case 'min':
-        default: {
-          if(requester.gridService.isBreakpointMin(breakpoint)){
-            requester.renderer2.addClass(requester.elementRef.nativeElement, key);
-          }
-          break;
-        }
+  Object.entries(item.computedClasses[breakpoint]).map(([key, value]) => {
+    if(!value) return;
+    if(item instanceof GridClassMax) {
+      if(item.gridService.isBreakpointMax(breakpoint)){
+        item.renderer.addClass(item.elementRef.nativeElement, key);
+      }
+    }else{
+      if(item.gridService.isBreakpointMin(breakpoint)){
+        item.renderer.addClass(item.elementRef.nativeElement, key);
       }
     }
-  })
+  });
 
 }
 
 /** @internal */
-function parseClasses(klass: any): NgxGridClass {
-  const classes: NgxGridClass = {};
+function parseClasses(klass: any): IGridClass {
+  const classes: IGridClass = {};
   if(klass){
     switch(true){
       case typeof klass === 'string': {

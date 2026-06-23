@@ -1,19 +1,15 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {AppComponent} from './app.component';
-import {NgxGridModule} from "../../../ngx-grid/src/lib/grid.module";
+import {GridModule} from "../../../ngx-grid/src/lib/grid.module";
 
 @NgModule({
   imports: [
     BrowserModule,
-    NgxGridModule.forRoot({
+    GridModule.forRoot({
       baseBreakpoint: '3xl',
     }),
   ],
-  declarations: [
-    AppComponent
-  ],
+  declarations: [],
   providers: [],
-  bootstrap: [AppComponent]
 })
 export class AppModule { }

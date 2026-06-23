@@ -1,64 +1,56 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Directive,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  Renderer2
-} from "@angular/core";
-import {NgxGridClass, NgxGridStyle} from "../../interfaces/grid.interface";
-import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
-import {NgxGridService} from "../../services/grid.service";
-import {buildStyleBreakpoint} from "./_helpers";
+import {computed, Directive, ElementRef, inject, input, OnChanges, OnDestroy, Renderer2, Signal} from "@angular/core";
+import {BehaviorSubject, debounceTime} from "rxjs";
+import {GridService} from "../../services/grid.service";
+import {buildStyleBreakpoint, IGridStyleInput, IGridStyleInputs} from "./_helpers";
+import {IGridBreakpointName, IGridStyle} from "../../grid.interface";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Directive({
   selector: '[xs.style], [sm.style], [md.style], [lg.style], [xl.style], [2xl.style], [3xl.style], [4xl.style], [mobile.style], [tablet.style], [desktop.style]',
+  standalone: true,
 })
-export class NgxGridStyleDirective implements AfterViewInit, OnChanges, OnDestroy {
-  @Input('xs.style') _xsStyle?: string|NgxGridStyle|string[]|null;
-  @Input('sm.style') _smStyle?: string|NgxGridStyle|string[]|null;
-  @Input('md.style') _mdStyle?: string|NgxGridStyle|string[]|null;
-  @Input('lg.style') _lgStyle?: string|NgxGridStyle|string[]|null;
-  @Input('xl.style') _xlStyle?: string|NgxGridStyle|string[]|null;
-  @Input('2xl.style') _2xlStyle?: string|NgxGridStyle|string[]|null;
-  @Input('3xl.style') _3xlStyle?: string|NgxGridStyle|string[]|null;
-  @Input('4xl.style') _4xlStyle?: string|NgxGridStyle|string[]|null;
-  @Input('mobile.style') _mobileClass?: string|NgxGridClass|string[]|null;
-  @Input('tablet.style') _tabletClass?: string|NgxGridClass|string[]|null;
-  @Input('desktop.style') _desktopClass?: string|NgxGridClass|string[]|null;
+export class GridStyle implements OnChanges, OnDestroy {
+  readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef);
+  readonly renderer: Renderer2 = inject(Renderer2);
+  readonly gridService: GridService = inject(GridService);
 
-  changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
-  destroy$: Subject<void> = new Subject<void>();
+  private readonly changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
 
-  styles: { [breakpoint: string]: NgxGridStyle } = {};
+  style_xs = input<IGridStyleInput>(null, { alias: 'xs.style' });
+  style_sm = input<IGridStyleInput>(null, { alias: 'sm.style' });
+  style_md = input<IGridStyleInput>(null, { alias: 'md.style' });
+  style_lg = input<IGridStyleInput>(null, { alias: 'lg.style' });
+  style_xl = input<IGridStyleInput>(null, { alias: 'xl.style' });
+  style_2xl = input<IGridStyleInput>(null, { alias: '2xl.style' });
+  style_3xl = input<IGridStyleInput>(null, { alias: '3xl.style' });
+  style_4xl = input<IGridStyleInput>(null, { alias: '4xl.style' });
+  style_mobile = input<IGridStyleInput>(null, { alias: 'mobile.style' });
+  style_tablet = input<IGridStyleInput>(null, { alias: 'tablet.style' });
+  style_desktop = input<IGridStyleInput>(null, { alias: 'desktop.style' });
 
-  constructor(
-    public elementRef: ElementRef<HTMLElement>,
-    public changeDetectorRef: ChangeDetectorRef,
-    public renderer2: Renderer2,
-    public gridService: NgxGridService,
-  ){}
+  styles: Signal<IGridStyleInputs> = computed(() => ({
+    'xs': this.style_xs(),
+    'sm': this.style_sm(),
+    'md': this.style_md(),
+    'lg': this.style_lg(),
+    'xl': this.style_xl(),
+    '2xl': this.style_2xl(),
+    '3xl': this.style_3xl(),
+    '4xl': this.style_4xl(),
+    'mobile': this.style_mobile(),
+    'tablet': this.style_tablet(),
+    'desktop': this.style_desktop(),
+  }));
 
-  ngAfterViewInit(){
-    this.gridService.onWindowResize().pipe(takeUntil(this.destroy$)).subscribe(() => this.changes$.next());
-    this.changes$.pipe(takeUntil(this.destroy$), debounceTime(0)).subscribe(() => this.build());
+  computedStyles: Partial<Record<IGridBreakpointName, IGridStyle>> = {};
+
+  constructor(){
+    this.changes$.pipe(takeUntilDestroyed(), debounceTime(0)).subscribe(() => this.build());
+    this.gridService.onWindowResize().pipe(takeUntilDestroyed()).subscribe(() => this.changes$.next());
   }
 
   private build(){
-    buildStyleBreakpoint(this, 'min', 'xs', this._xsStyle);
-    buildStyleBreakpoint(this, 'min', 'sm', this._smStyle);
-    buildStyleBreakpoint(this, 'min', 'md', this._mdStyle);
-    buildStyleBreakpoint(this, 'min', 'lg', this._lgStyle);
-    buildStyleBreakpoint(this, 'min', 'xl', this._xlStyle);
-    buildStyleBreakpoint(this, 'min', '2xl', this._2xlStyle);
-    buildStyleBreakpoint(this, 'min', '3xl', this._3xlStyle);
-    buildStyleBreakpoint(this, 'min', '4xl', this._4xlStyle);
-    buildStyleBreakpoint(this, 'min', 'mobile', this._mobileClass);
-    buildStyleBreakpoint(this, 'min', 'tablet', this._tabletClass);
-    buildStyleBreakpoint(this, 'min', 'desktop', this._desktopClass);
-    this.changeDetectorRef.markForCheck();
+    Object.entries(this.styles()).map(([breakpoint, style]) => buildStyleBreakpoint(this, breakpoint as IGridBreakpointName, style));
   }
 
   ngOnChanges() {
@@ -67,7 +59,5 @@ export class NgxGridStyleDirective implements AfterViewInit, OnChanges, OnDestro
 
   ngOnDestroy() {
     this.changes$.complete();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

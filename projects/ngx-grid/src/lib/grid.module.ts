@@ -1,21 +1,17 @@
 import {ModuleWithProviders, NgModule} from "@angular/core";
-import {NgxGridOptions} from "./interfaces/grid.interface";
-import {GRID_OPTIONS} from "./grid.constants";
-import {NgxGridService} from "./services/grid.service";
-import {GRID_MODULES} from "./grid.modules";
+import {GridImports} from "./grid.constants";
+import {IGridOptions} from "./grid.interface";
+import {provideGrid} from "./grid.provider";
 
 @NgModule({
-  imports: GRID_MODULES,
-  exports: GRID_MODULES,
+  imports: GridImports,
+  exports: GridImports,
 })
-export class NgxGridModule {
-  static forRoot(options?: Partial<NgxGridOptions>): ModuleWithProviders<NgxGridModule> {
+export class GridModule {
+  static forRoot(options?: Partial<IGridOptions>): ModuleWithProviders<GridModule> {
     return {
-      ngModule: NgxGridModule,
-      providers: [
-        { provide: GRID_OPTIONS, useValue: options || {} },
-        NgxGridService,
-      ],
+      ngModule: GridModule,
+      providers: provideGrid(options),
     }
   }
 }

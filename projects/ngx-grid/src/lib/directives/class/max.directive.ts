@@ -1,64 +1,56 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Directive,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  Renderer2
-} from "@angular/core";
-import {NgxGridClass} from "../../interfaces/grid.interface";
-import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
-import {NgxGridService} from "../../services/grid.service";
-import {buildClassBreakpoint} from "./_helpers";
+import {computed, Directive, ElementRef, inject, input, OnChanges, OnDestroy, Renderer2, Signal} from "@angular/core";
+import {IGridBreakpointName, IGridClass} from "../../grid.interface";
+import {BehaviorSubject, debounceTime} from "rxjs";
+import {GridService} from "../../services/grid.service";
+import {buildClassBreakpoint, IGridClassInput, IGridClassInputs} from "./_helpers";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Directive({
   selector: '[max.xs.class], [max.sm.class], [max.md.class], [max.lg.class], [max.xl.class], [max.2xl.class], [max.3xl.class], [max.4xl.class], [max.mobile.class], [max.tablet.class], [max.desktop.class]',
+  standalone: true,
 })
-export class NgxGridMaxClassDirective implements AfterViewInit, OnChanges, OnDestroy {
-  @Input('max.xs.class') _xsClass?: string|NgxGridClass|string[]|null;
-  @Input('max.sm.class') _smClass?: string|NgxGridClass|string[]|null;
-  @Input('max.md.class') _mdClass?: string|NgxGridClass|string[]|null;
-  @Input('max.lg.class') _lgClass?: string|NgxGridClass|string[]|null;
-  @Input('max.xl.class') _xlClass?: string|NgxGridClass|string[]|null;
-  @Input('max.2xl.class') _2xlClass?: string|NgxGridClass|string[]|null;
-  @Input('max.3xl.class') _3xlClass?: string|NgxGridClass|string[]|null;
-  @Input('max.4xl.class') _4xlClass?: string|NgxGridClass|string[]|null;
-  @Input('max.mobile.class') _mobileClass?: string|NgxGridClass|string[]|null;
-  @Input('max.tablet.class') _tabletClass?: string|NgxGridClass|string[]|null;
-  @Input('max.desktop.class') _desktopClass?: string|NgxGridClass|string[]|null;
+export class GridClassMax implements OnChanges, OnDestroy {
+  readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef);
+  readonly renderer: Renderer2 = inject(Renderer2);
+  readonly gridService: GridService = inject(GridService);
 
-  changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
-  destroy$: Subject<void> = new Subject<void>();
+  private readonly changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
 
-  classes: { [breakpoint: string]: NgxGridClass } = {};
+  class_xs = input<IGridClassInput>(null, { alias: 'xs.class' });
+  class_sm = input<IGridClassInput>(null, { alias: 'sm.class' });
+  class_md = input<IGridClassInput>(null, { alias: 'md.class' });
+  class_lg = input<IGridClassInput>(null, { alias: 'lg.class' });
+  class_xl = input<IGridClassInput>(null, { alias: 'xl.class' });
+  class_2xl = input<IGridClassInput>(null, { alias: '2xl.class' });
+  class_3xl = input<IGridClassInput>(null, { alias: '3xl.class' });
+  class_4xl = input<IGridClassInput>(null, { alias: '4xl.class' });
+  class_mobile = input<IGridClassInput>(null, { alias: 'mobile.class' });
+  class_tablet = input<IGridClassInput>(null, { alias: 'tablet.class' });
+  class_desktop = input<IGridClassInput>(null, { alias: 'desktop.class' });
 
-  constructor(
-    public elementRef: ElementRef<HTMLElement>,
-    public changeDetectorRef: ChangeDetectorRef,
-    public renderer2: Renderer2,
-    public gridService: NgxGridService,
-  ){}
+  classes: Signal<IGridClassInputs> = computed(() => ({
+    'xs': this.class_xs(),
+    'sm': this.class_sm(),
+    'md': this.class_md(),
+    'lg': this.class_lg(),
+    'xl': this.class_xl(),
+    '2xl': this.class_2xl(),
+    '3xl': this.class_3xl(),
+    '4xl': this.class_4xl(),
+    'mobile': this.class_mobile(),
+    'tablet': this.class_tablet(),
+    'desktop': this.class_desktop(),
+  }));
 
-  ngAfterViewInit(){
-    this.gridService.onWindowResize().pipe(takeUntil(this.destroy$)).subscribe(() => this.changes$.next());
-    this.changes$.pipe(takeUntil(this.destroy$), debounceTime(0)).subscribe(() => this.build());
+  computedClasses: Partial<Record<IGridBreakpointName, IGridClass>> = {};
+
+  constructor(){
+    this.changes$.pipe(takeUntilDestroyed(), debounceTime(0)).subscribe(() => this.build());
+    this.gridService.onWindowResize().pipe(takeUntilDestroyed()).subscribe(() => this.changes$.next());
   }
 
   private build(){
-    buildClassBreakpoint(this, 'max', 'xs', this._xsClass);
-    buildClassBreakpoint(this, 'max', 'sm', this._smClass);
-    buildClassBreakpoint(this, 'max', 'md', this._mdClass);
-    buildClassBreakpoint(this, 'max', 'lg', this._lgClass);
-    buildClassBreakpoint(this, 'max', 'xl', this._xlClass);
-    buildClassBreakpoint(this, 'max', '2xl', this._2xlClass);
-    buildClassBreakpoint(this, 'max', '3xl', this._3xlClass);
-    buildClassBreakpoint(this, 'max', '4xl', this._4xlClass);
-    buildClassBreakpoint(this, 'max', 'mobile', this._mobileClass);
-    buildClassBreakpoint(this, 'max', 'tablet', this._tabletClass);
-    buildClassBreakpoint(this, 'max', 'desktop', this._desktopClass);
-    this.changeDetectorRef.markForCheck();
+    Object.entries(this.classes()).map(([breakpoint, klass]) => buildClassBreakpoint(this, breakpoint as IGridBreakpointName, klass));
   }
 
   ngOnChanges(){
@@ -67,7 +59,5 @@ export class NgxGridMaxClassDirective implements AfterViewInit, OnChanges, OnDes
 
   ngOnDestroy() {
     this.changes$.complete();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -1,62 +1,55 @@
-import {AfterViewInit, Directive, Input, OnDestroy, TemplateRef, ViewContainerRef} from "@angular/core";
-import {NgxGridBreakpointName} from "../interfaces/grid.interface";
-import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
-import {NgxGridService} from "../services/grid.service";
+import {
+  Directive,
+  inject,
+  input,
+  InputSignal,
+  OnChanges,
+  OnDestroy,
+  TemplateRef,
+  ViewContainerRef
+} from "@angular/core";
+import {BehaviorSubject, debounceTime} from "rxjs";
+import {IGridBreakpointName} from "../grid.interface";
+import {GridService} from "../services/grid.service";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Directive({
-    selector: '[ngxScreenSize], [ngxScreenSizeMin], [ngxScreenSizeMax]',
+  selector: '[ngxScreenSize], [ngxScreenSizeMin], [ngxScreenSizeMax]',
+  standalone: true,
 })
-export class NgxGridScreenSizeDirective implements AfterViewInit, OnDestroy {
-  @Input() ngxScreenSize?: NgxGridBreakpointName|null;
-  @Input() ngxScreenSizeMin?: NgxGridBreakpointName|null;
-  @Input() ngxScreenSizeMax?: NgxGridBreakpointName|null;
+export class GridScreenSize implements OnChanges, OnDestroy {
+  protected readonly viewContainerRef: ViewContainerRef = inject(ViewContainerRef);
+  protected readonly templateRef: TemplateRef<any> = inject(TemplateRef);
+  protected readonly gridService: GridService = inject(GridService);
 
-  changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
-  destroy$: Subject<void> = new Subject();
+  screenSize: InputSignal<IGridBreakpointName|null> = input<IGridBreakpointName|null>(null, { alias: 'ngxScreenSize' });
+  screenSizeMin: InputSignal<IGridBreakpointName|null> = input<IGridBreakpointName|null>(null, { alias: 'ngxScreenSizeMin' });
+  screenSizeMax: InputSignal<IGridBreakpointName|null> = input<IGridBreakpointName|null>(null, { alias: 'ngxScreenSizeMax' });
 
-  constructor(
-    private viewContainerRef: ViewContainerRef,
-    private templateRef: TemplateRef<any>,
-    private gridService: NgxGridService,
-  ){}
+  private changes$: BehaviorSubject<void> = new BehaviorSubject<any>(null);
 
-  ngAfterViewInit(){
-    this.gridService.onWindowResize().pipe(takeUntil(this.destroy$)).subscribe(() => this.changes$.next());
-    this.changes$.pipe(takeUntil(this.destroy$), debounceTime(0)).subscribe(() => this.build());
+  constructor(){
+    this.changes$.pipe(takeUntilDestroyed(), debounceTime(0)).subscribe(() => this.build());
+    this.gridService.onWindowResize().pipe(takeUntilDestroyed()).subscribe(() => this.changes$.next());
   }
 
   private build(){
-
-    // clear view
     this.viewContainerRef.clear();
-
-    // create view if condition is true
-    if(this.screenSize && this.gridService.isBreakpointMin(this.screenSize) && this.gridService.isBreakpointMax(this.screenSize)){
+    if(this.screenSize() && this.gridService.isBreakpointMin(this.screenSize()) && this.gridService.isBreakpointMax(this.screenSize())){
       this.viewContainerRef.createEmbeddedView(this.templateRef);
-    }else if(this.screenSizeMin && this.gridService.isBreakpointMin(this.screenSizeMin)){
+    }else if(this.screenSizeMin() && this.gridService.isBreakpointMin(this.screenSizeMin())){
       this.viewContainerRef.createEmbeddedView(this.templateRef);
-    }else if(this.screenSizeMax && this.gridService.isBreakpointMax(this.screenSizeMax)){
+    }else if(this.screenSizeMax() && this.gridService.isBreakpointMax(this.screenSizeMax())){
       this.viewContainerRef.createEmbeddedView(this.templateRef);
     }
-
   }
 
-  private get screenSize(): NgxGridBreakpointName|null {
-    return this.ngxScreenSize || null;
-  }
-
-  private get screenSizeMin(): NgxGridBreakpointName|null {
-    return this.ngxScreenSizeMin || null;
-  }
-
-  private get screenSizeMax(): NgxGridBreakpointName|null {
-    return this.ngxScreenSizeMax || null;
+  ngOnChanges() {
+    this.changes$.next();
   }
 
   ngOnDestroy() {
     this.changes$.complete();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
 }

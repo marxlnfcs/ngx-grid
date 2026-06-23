@@ -1,44 +1,47 @@
-import {ElementRef, Renderer2, RendererStyleFlags2} from "@angular/core";
-import {NgxGridService} from "../../services/grid.service";
-import {NgxGridBreakpointName, NgxGridStyle} from "../../interfaces/grid.interface";
+import {RendererStyleFlags2} from "@angular/core";
+import {IGridBreakpointName, IGridStyle} from "../../grid.interface";
+import {GridStyle} from "./base.directive";
+import {GridStyleMin} from "./min.directive";
+import {GridStyleMax} from "./max.directive";
 
-/** @internal */
-export interface StyleBreakpointRequester {
-  renderer2: Renderer2;
-  elementRef: ElementRef<HTMLElement>,
-  gridService: NgxGridService;
-  styles: { [breakpoint: string]: NgxGridStyle };
+export type IGridStyleInput = string|IGridStyle|string[]|null;
+export interface IGridStyleInputs {
+  'xs': IGridStyleInput;
+  'sm': IGridStyleInput;
+  'md': IGridStyleInput;
+  'lg': IGridStyleInput;
+  'xl': IGridStyleInput;
+  '2xl': IGridStyleInput;
+  '3xl': IGridStyleInput;
+  '4xl': IGridStyleInput;
+  'mobile': IGridStyleInput;
+  'tablet': IGridStyleInput;
+  'desktop': IGridStyleInput;
 }
 
 /** @internal */
-export function buildStyleBreakpoint(requester: StyleBreakpointRequester, mode: 'min'|'max', breakpoint: NgxGridBreakpointName, styles: any): void {
+export function buildStyleBreakpoint(item: GridStyle|GridStyleMin|GridStyleMax, breakpoint: IGridBreakpointName, style: IGridStyleInput): void {
 
   // remove current styles
-  Object.keys(requester.styles[breakpoint] || {}).map(key => {
-    requester.renderer2.removeStyle(requester.elementRef.nativeElement, key);
+  Object.keys(item.computedStyles[breakpoint] || {}).map(key => {
+    item.renderer.removeStyle(item.elementRef.nativeElement, key);
   });
 
   // parse styles
-  requester.styles[breakpoint] = parseStyles(styles);
+  item.computedStyles[breakpoint] = parseStyles(style);
 
   // apply styles
-  Object.keys(requester.styles[breakpoint]).map(key => {
-    const value = requester.styles[breakpoint][key]?.replace('!important', '');
-    const important = requester.styles[breakpoint][key]?.indexOf('!important') !== -1;
+  Object.entries(item.computedStyles[breakpoint]).map(([key, value]) => {
+    value = value?.replace('!important', '');
+    const important = value?.indexOf('!important') !== -1;
 
-    switch(mode){
-      case 'max': {
-        if(requester.gridService.isBreakpointMax(breakpoint)){
-          requester.renderer2.setStyle(requester.elementRef.nativeElement, key, value, important ? RendererStyleFlags2.Important : undefined);
-        }
-        break;
+    if(item instanceof GridStyleMax){
+      if(item.gridService.isBreakpointMax(breakpoint)){
+        item.renderer.setStyle(item.elementRef.nativeElement, key, value, important ? RendererStyleFlags2.Important : undefined);
       }
-      case 'min':
-      default: {
-        if(requester.gridService.isBreakpointMin(breakpoint)){
-          requester.renderer2.setStyle(requester.elementRef.nativeElement, key, value, important ? RendererStyleFlags2.Important : undefined);
-        }
-        break;
+    }else{
+      if(item.gridService.isBreakpointMin(breakpoint)){
+        item.renderer.setStyle(item.elementRef.nativeElement, key, value, important ? RendererStyleFlags2.Important : undefined);
       }
     }
   });
@@ -46,8 +49,8 @@ export function buildStyleBreakpoint(requester: StyleBreakpointRequester, mode: 
 }
 
 /** @internal */
-function parseStyles(style: any): NgxGridStyle {
-  const styles: NgxGridStyle = {};
+function parseStyles(style: any): IGridStyle {
+  const styles: IGridStyle = {};
   if(style){
     switch(true){
       case typeof style === 'string': {

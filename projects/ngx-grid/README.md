@@ -19,14 +19,14 @@
 
 #
 ### Module:
-Import `NgxGridModule` from `@marxlnfcs/ngx-grid`
+Import `GridModule` from `@marxlnfcs/ngx-grid`
 
 ```typescript
-import { NgxGridModule } from '@marxlnfcs/ngx-grid-alt';
+import { GridModule } from '@marxlnfcs/ngx-grid';
 
 @NgModule({
   imports: [
-    NgxGridModule.forRoot({ ... })
+    GridModule.forRoot({ ... })
   ]
 })
 ```
