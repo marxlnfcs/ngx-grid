@@ -15,9 +15,33 @@
           <ngx-grid-column [size]="12" class="column purple">12 / 12</ngx-grid-column>
         </ngx-grid-group>
         <ngx-grid-column [size]="4" class="column yellow">4 / 12</ngx-grid-column>
-        <ngx-grid-column class="column yellow">4 / 12</ngx-grid-column>
+        <ngx-grid-column [size]="12" class="column yellow">12 / 12</ngx-grid-column>
       </ngx-grid-group>
     </ngx-grid>
+  </div>
+
+  <!-- grid with ng-template -->
+  <div class="container">
+    <div class="title">Grid (With ng-template)</div>
+    <ngx-grid>
+      <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 12, color: 'blue' }"></ng-container>
+      <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 4, color: 'green' }"></ng-container>
+      <ngx-grid-group [size]="8">
+        <ngx-grid-group [size]="8">
+          <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 3, color: 'orange' }"></ng-container>
+          <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 3, color: 'orange' }"></ng-container>
+          <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 3, color: 'orange' }"></ng-container>
+          <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 3, color: 'orange' }"></ng-container>
+          <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 12, color: 'purple' }"></ng-container>
+        </ngx-grid-group>
+        <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 4, color: 'yellow' }"></ng-container>
+        <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 12, color: 'yellow' }"></ng-container>
+      </ngx-grid-group>
+    </ngx-grid>
+
+    <ng-template #columnRef let-color="color" let-size="size">
+      <ngx-grid-column [size]="$any(size)" class="column {{color}}">{{size}} / 12</ngx-grid-column>
+    </ng-template>
   </div>
 
   <!-- grid-centered -->

@@ -49,7 +49,20 @@ Simple component to build a dynamic and easy to use grid layout
 </ngx-grid>
 ```
 
-#
+## Grid component with template
+To create columns dynamically, you can use the `ngxGridTemplateOutlet` directive which works exactly like the `ngTemplateOutlet` directive.
+```html
+<ngx-grid>
+  <ng-container *ngxGridTemplateOutlet="columnRef; context: { size: 6 }"></ng-container>
+  <ng-container [ngxGridTemplateOutlet]="columnRef" [ngxGridTemplateOutletContext]="{ size: 6 }"></ng-container>
+</ngx-grid>
+
+<ng-template #columnRef let-size="size">
+  <ngx-grid-column [size]="size">{{size}}/12</ngx-grid-column>
+</ng-template>
+```
+
+
 #### Options for Grid component: `<ngx-grid>`
 * `strategy` - Defines the strategy of the grid component. SCREEN uses the media queries and CONTAINER uses the container queries which is experimental, Possible values: screen, container
 * `baseBreakpoint` - Defines the base breakpoint of this component. (default is `xs`), Possible values: xs, sm, md, lg, xl, 2xl, 3xl, 4xl

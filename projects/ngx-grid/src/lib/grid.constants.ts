@@ -11,6 +11,7 @@ import {GridClassMax} from "./directives/class/max.directive";
 import {GridStyle} from "./directives/style/base.directive";
 import {GridStyleMin} from "./directives/style/min.directive";
 import {GridStyleMax} from "./directives/style/max.directive";
+import {GridTemplateOutlet} from "./components/grid/grid.directive";
 
 export const GRID_OPTIONS_DEFAULTS: IGridOptions = {
   strategy: 'screen',
@@ -39,6 +40,8 @@ export const GridImports: Type<any>[] = [
   Grid,
   GridColumn,
   GridGroup,
+  GridTemplateOutlet,
+
   GridCentered,
 
   GridScreenSize,

@@ -270,6 +270,10 @@ export class GridRef implements OnDestroy {
        .map(item => ({ item, breakpoint: this.getNearestBreakpoint(item, group) }))
        .filter(i => !!i.breakpoint)
        .sort((a, b) => {
+         const position = a.item.elementRef.nativeElement.compareDocumentPosition(b.item.elementRef.nativeElement);
+         return position & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : position & Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0;
+       })
+       .sort((a, b) => {
          const aOrder = a.breakpoint?.order as number;
          const bOrder = b.breakpoint?.order as number;
          if(aOrder < bOrder) return -1;
