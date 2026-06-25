@@ -1,16 +1,7 @@
-import {
-  Directive,
-  inject,
-  input,
-  InputSignal,
-  InputSignalWithTransform,
-  OnChanges,
-  OnDestroy,
-  OnInit
-} from "@angular/core";
+import {Directive, inject, input, InputSignal, OnChanges, OnDestroy, OnInit} from "@angular/core";
 import {GridColumnBase} from "./base";
 import {GridRef} from "../../../services/grid-ref.service";
-import {IGridAutoRows, IGridGapSize, IGridOptions, IGridStrategy} from "../../../grid.interface";
+import {IGridAutoRows, IGridGapSize, IGridGroupOptions, IGridOptions, IGridStrategy} from "../../../grid.interface";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {debounceTime} from "rxjs";
 
@@ -36,15 +27,7 @@ export class GridGroup extends GridColumnBase implements OnInit, OnChanges, OnDe
   rows: InputSignal<string[]|undefined> = input<string[]>();
   autoRows: InputSignal<IGridAutoRows|undefined> = input<IGridAutoRows>();
 
-  options: InputSignalWithTransform<Partial<IGridOptions>|undefined, IGridOptions> = input<Partial<IGridOptions>|undefined, IGridOptions>(undefined, {
-    transform: (partial) => this.gridService.buildOptions(this.parentGridRef.options(), partial, {
-      strategy: this.strategy(),
-      gap: this.gap(),
-      columnGap: this.columnGap(),
-      rowGap: this.rowGap(),
-      autoRows: this.autoRows(),
-    })
-  });
+  options: InputSignal<Partial<IGridGroupOptions>|undefined> = input<Partial<IGridGroupOptions>|undefined>();
 
   constructor(){ super();
     this.ownGridRef.changes.pipe(takeUntilDestroyed(), debounceTime(0)).subscribe({ next: () => this.parentGridRef.emitChange() });
@@ -57,6 +40,13 @@ export class GridGroup extends GridColumnBase implements OnInit, OnChanges, OnDe
 
   /** Emit changes if any input changes */
   ngOnChanges() {
+    this.ownGridRef.updateOptions(this.gridService.buildOptions(this.options(), {
+      strategy: this.strategy(),
+      gap: this.gap(),
+      columnGap: this.columnGap(),
+      rowGap: this.rowGap(),
+      autoRows: this.autoRows(),
+    }));
     this.parentGridRef.emitChange();
   }
 

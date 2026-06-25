@@ -1,11 +1,11 @@
 import {Component} from '@angular/core';
-import {GridImports} from "../../../ngx-grid/src/lib/grid.constants";
+import {GridModule} from "../../../ngx-grid/src/lib/grid.module";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   standalone: true,
-  imports: [GridImports],
+  imports: [GridModule],
 })
 export class AppComponent {}

@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  inject,
-  input,
-  InputSignal,
-  InputSignalWithTransform,
-  OnChanges
-} from "@angular/core";
+import {ChangeDetectionStrategy, Component, ElementRef, inject, input, InputSignal, OnChanges} from "@angular/core";
 import {
   IGridAutoRows,
   IGridBreakpointName,
@@ -53,17 +44,7 @@ export class Grid implements OnChanges {
   rows: InputSignal<string[]|undefined> = input<string[]>();
   autoRows: InputSignal<IGridAutoRows|undefined> = input<IGridAutoRows>();
 
-  options: InputSignalWithTransform<IGridOptions, Partial<IGridOptions>|undefined> = input<IGridOptions, Partial<IGridOptions>|undefined>(this.gridService.options, {
-    transform: (partial) => this.gridService.buildOptions(partial, {
-      strategy: this.strategy(),
-      baseBreakpoint: this.baseBreakpoint(),
-      baseSize: this.baseSize(),
-      gap: this.gap(),
-      columnGap: this.columnGap(),
-      rowGap: this.rowGap(),
-      autoRows: this.autoRows(),
-    })
-  });
+  options: InputSignal<Partial<IGridOptions>|undefined> = input<Partial<IGridOptions>|undefined>();
 
   constructor(){
     this.ownGridRef.changes.pipe(takeUntilDestroyed(), debounceTime(0)).subscribe({ next: () => this.build() });
@@ -71,7 +52,15 @@ export class Grid implements OnChanges {
   }
 
   ngOnChanges() {
-    this.ownGridRef.updateOptions(this.options());
+    this.ownGridRef.updateOptions(this.gridService.buildOptions(this.options(), {
+      strategy: this.strategy(),
+      baseBreakpoint: this.baseBreakpoint(),
+      baseSize: this.baseSize(),
+      gap: this.gap(),
+      columnGap: this.columnGap(),
+      rowGap: this.rowGap(),
+      autoRows: this.autoRows(),
+    }));
     this.ownGridRef.emitChange();
   }
 

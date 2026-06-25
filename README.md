@@ -20,14 +20,12 @@
 #
 ### Declaration:
 ```typescript
-import { provideGrid, GridImports } from '@marxlnfcs/ngx-grid';
-
-
+import { provideGrid, GridModule } from '@marxlnfcs/ngx-grid';
 
 @NgModule({
   imports: [
     ...
-    GridImports,
+    GridModule,
   ],
   providers: [
     ...

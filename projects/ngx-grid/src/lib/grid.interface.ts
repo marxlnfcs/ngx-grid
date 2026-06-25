@@ -93,3 +93,11 @@ export interface IGridOptions {
   breakpoints: IGridBreakpoints;
 
 }
+
+export interface IGridGroupOptions extends Pick<IGridOptions,
+  | 'strategy'
+  | 'gap'
+  | 'columnGap'
+  | 'rowGap'
+  | 'autoRows'
+> {}

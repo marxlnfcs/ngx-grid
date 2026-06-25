@@ -22,7 +22,6 @@ export class GridRef implements OnDestroy {
   private options$: WritableSignal<IGridOptions> = signal(this.gridService.options);
   private columns$: WritableSignal<IGridColumn[]> = signal([]);
 
-
   /**
    * Retrieves the current configuration options for the grid.
    *
