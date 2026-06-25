@@ -20,7 +20,6 @@ export class GridService {
    * strategy, baseBreakpoint, baseSize, gap, columnGap, rowGap, autoRows, and breakpoints.
    */
   get options(): IGridOptions {
-    console.log(this.gridOptions)
     return {
       strategy: this.gridOptions?.strategy ?? GRID_OPTIONS_DEFAULTS.strategy,
       baseBreakpoint: this.gridOptions?.baseBreakpoint ?? GRID_OPTIONS_DEFAULTS.baseBreakpoint,
