@@ -1,12 +1,15 @@
-import {Inject, Injectable, Optional} from "@angular/core";
+import {Inject, Injectable, Optional, Signal} from "@angular/core";
 import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../grid.constants";
 import {IGridBreakpointName, IGridOptions} from "../grid.interface";
 import {Observable} from "rxjs";
 import {createEvent} from "../utils/event.utils";
 import {deepMergeDefined, sizeToPixel} from "../utils/common.utils";
+import {toSignal} from "@angular/core/rxjs-interop";
 
 @Injectable()
 export class GridService {
+  private _windowResizedSignal?: Signal<void>;
+
   constructor(
     @Optional() @Inject(GRID_OPTIONS) private gridOptions: IGridOptions,
   ){}
@@ -56,6 +59,18 @@ export class GridService {
   }
 
   /**
+   * Provides a signal that is triggered when the window is resized.
+   *
+   * @return {Signal<void>} A signal object that emits when the window resize event occurs.
+   */
+  get windowResized(): Signal<void> {
+    if(!this._windowResizedSignal){
+      this._windowResizedSignal = toSignal(this.onWindowResize());
+    }
+    return this._windowResizedSignal;
+  }
+
+  /**
    * Returns an observable that emits when the window is resized.
    */
   onWindowResize(): Observable<void> {
@@ -87,6 +102,28 @@ export class GridService {
   }
 
   /**
+   * Determines the next breakpoint that has a greater width than the given breakpoint.
+   * If no breakpoint is provided, the base breakpoint is used as the reference point.
+   *
+   * @param {IGridBreakpointName|null} [breakpoint] - The name of the breakpoint to start from. If null or undefined, the base breakpoint is used.
+   * @return {IGridBreakpointName|null} - The name of the next breakpoint with a greater width, or null if no such breakpoint exists.
+   */
+  getNextBreakpoint(breakpoint?: IGridBreakpointName|null): IGridBreakpointName|null {
+    const currentBreakpoint = breakpoint ?? this.options.baseBreakpoint;
+    const currentWidth = this.getBreakpointWidth(currentBreakpoint);
+    let nextBreakpoint: IGridBreakpointName | null = null;
+    let nextBreakpointWidth = Number.POSITIVE_INFINITY;
+    for (const name of Object.keys(this.options.breakpoints) as IGridBreakpointName[]) {
+      const width = this.getBreakpointWidth(name);
+      if (width > currentWidth && width < nextBreakpointWidth) {
+        nextBreakpoint = name;
+        nextBreakpointWidth = width;
+      }
+    }
+    return nextBreakpoint;
+  }
+
+  /**
    * Determines if the current container width is greater than or equal to the specified breakpoint width.
    *
    * @param {IGridBreakpointName|null} [breakpoint] - The name of the breakpoint to check against. Can be null.
@@ -100,15 +137,20 @@ export class GridService {
   }
 
   /**
-   * Determines if the current container width is less than or equal to the specified breakpoint width.
+   * Determines if the given breakpoint is the maximum applicable breakpoint for the current container width.
    *
-   * @param {IGridBreakpointName|null} [breakpoint] The breakpoint name to compare against, or null for no specific breakpoint.
-   * @param {Window|HTMLElement|null} [container] The container element or window to check the width of. If null, defaults to the current window.
-   * @return {boolean} True if the container width is less than or equal to the breakpoint width; otherwise, false.
+   * @param {IGridBreakpointName|null} [breakpoint] - The breakpoint to check. Defaults to the base breakpoint if not provided.
+   * @param {Window|HTMLElement|null} [container] - The container whose width is considered. Defaults to the default container if not specified.
+   * @return {boolean} Returns true if the current container width is less than the width of the next breakpoint, or if there is no next breakpoint.
    */
   isBreakpointMax(breakpoint?: IGridBreakpointName|null, container?: Window|HTMLElement|null): boolean {
-    const containerWidth: number = this.getContainerWidth(container);
-    const breakpointWidth: number = this.getBreakpointWidth(breakpoint);
-    return containerWidth <= breakpointWidth;
+    const currentBreakpoint = breakpoint ?? this.options.baseBreakpoint;
+    const containerWidth = this.getContainerWidth(container);
+    const nextBreakpoint = this.getNextBreakpoint(currentBreakpoint);
+    if (!nextBreakpoint) {
+      return true;
+    }
+    const nextBreakpointWidth = this.getBreakpointWidth(nextBreakpoint);
+    return containerWidth < nextBreakpointWidth;
   }
 }

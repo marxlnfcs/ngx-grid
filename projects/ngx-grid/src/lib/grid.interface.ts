@@ -68,14 +68,14 @@ export interface IGridOptions {
   /**
    * Gap between columns
    * @example 2.5rem
-   * @default 1rem
+   * @default .gap
    */
   columnGap?: IGridGapSize;
 
   /**
    * Gap between columns
    * @example 2.5rem
-   * @default 1rem
+   * @default .gap
    */
   rowGap?: IGridGapSize;
 

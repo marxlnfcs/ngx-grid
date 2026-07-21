@@ -1,7 +1,7 @@
 import {Directive, inject, input, InputSignal, OnChanges, OnDestroy, OnInit} from "@angular/core";
 import {GridColumnBase} from "./base";
 import {GridRef} from "../../../services/grid-ref.service";
-import {IGridAutoRows, IGridGapSize, IGridGroupOptions, IGridOptions, IGridStrategy} from "../../../grid.interface";
+import {IGridAutoRows, IGridGapSize, IGridGroupOptions, IGridStrategy} from "../../../grid.interface";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {debounceTime} from "rxjs";
 
