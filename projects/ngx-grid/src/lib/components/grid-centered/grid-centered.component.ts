@@ -103,6 +103,7 @@ export class GridCentered implements OnChanges {
   constructor(){
     this.ownGridRef.changes.pipe(takeUntilDestroyed(), debounceTime(0)).subscribe({ next: () => this.build() });
     this.gridService.onWindowResize().pipe(takeUntilDestroyed()).subscribe({ next: () => this.ownGridRef.emitChange() });
+    this.gridService.windowResized();
   }
 
   ngOnChanges() {

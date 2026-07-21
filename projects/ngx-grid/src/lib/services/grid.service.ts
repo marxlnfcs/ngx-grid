@@ -1,4 +1,4 @@
-import {Inject, Injectable, Optional, Signal} from "@angular/core";
+import {Inject, Injectable, Injector, Optional, Signal} from "@angular/core";
 import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../grid.constants";
 import {IGridBreakpointName, IGridOptions} from "../grid.interface";
 import {Observable} from "rxjs";
@@ -12,6 +12,7 @@ export class GridService {
 
   constructor(
     @Optional() @Inject(GRID_OPTIONS) private gridOptions: IGridOptions,
+    private injector: Injector,
   ){}
 
   /**
@@ -65,7 +66,9 @@ export class GridService {
    */
   get windowResized(): Signal<void> {
     if(!this._windowResizedSignal){
-      this._windowResizedSignal = toSignal(this.onWindowResize());
+      this._windowResizedSignal = toSignal(this.onWindowResize(), {
+        injector: this.injector
+      });
     }
     return this._windowResizedSignal;
   }

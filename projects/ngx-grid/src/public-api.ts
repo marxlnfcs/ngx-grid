@@ -2,6 +2,7 @@ export * from './lib/grid.constants';
 export * from './lib/grid.interface';
 export * from './lib/grid.module';
 export * from './lib/grid.provider';
+export * from './lib/grid.type';
 export * from './lib/components/grid/grid.component';
 export * from './lib/components/grid/grid.directive';
 export * from './lib/components/grid/grid.interface';
