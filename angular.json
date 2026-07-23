@@ -52,9 +52,6 @@
               "base": "dist/ngx-grid-view"
             },
             "index": "projects/ngx-grid-view/src/index.html",
-            "polyfills": [
-              "projects/ngx-grid-view/src/polyfills.ts"
-            ],
             "tsConfig": "projects/ngx-grid-view/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -99,7 +96,6 @@
               "aot": false,
               "optimization": false,
               "extractLicenses": false,
-              "polyfills": "projects/ngx-grid-view/src/polyfills.ts"
             }
           },
           "defaultConfiguration": "production"
