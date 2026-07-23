@@ -1,4 +1,4 @@
-import {Inject, Injectable, Injector, Optional, Signal} from "@angular/core";
+import {Inject, Injectable, Optional, Signal} from "@angular/core";
 import {GRID_OPTIONS, GRID_OPTIONS_DEFAULTS} from "../grid.constants";
 import {IGridBreakpointName, IGridOptions} from "../grid.interface";
 import {Observable} from "rxjs";
@@ -8,11 +8,8 @@ import {toSignal} from "@angular/core/rxjs-interop";
 
 @Injectable()
 export class GridService {
-  private _windowResizedSignal?: Signal<void>;
-
   constructor(
     @Optional() @Inject(GRID_OPTIONS) private gridOptions: IGridOptions,
-    private injector: Injector,
   ){}
 
   /**
@@ -60,18 +57,11 @@ export class GridService {
   }
 
   /**
-   * Provides a signal that is triggered when the window is resized.
+   * Provides a signal that will be triggered when the window is resized.
    *
    * @return {Signal<void>} A signal object that emits when the window resize event occurs.
    */
-  get windowResized(): Signal<void> {
-    if(!this._windowResizedSignal){
-      this._windowResizedSignal = toSignal(this.onWindowResize(), {
-        injector: this.injector
-      });
-    }
-    return this._windowResizedSignal;
-  }
+  readonly windowResized: Signal<void> = toSignal(this.onWindowResize());
 
   /**
    * Returns an observable that emits when the window is resized.
